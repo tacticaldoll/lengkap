@@ -47,14 +47,16 @@ fn main() {
         panic!("one live job leaves fan-in pending");
     };
 
-    let decision = adjudicate(assembly, finding(Slot::new(1), ObservedJob::DeadLettered))
+    let decision = assembly
+        .adjudicate(finding(Slot::new(1), ObservedJob::DeadLettered))
         .expect("slot is valid");
 
     assert!(matches!(
         decision,
         Decision::Impossible {
+            assembly,
             slot,
             cause: CannotComplete::DeadLettered
-        } if slot == Slot::new(1)
+        } if slot == Slot::new(1) && assembly.remaining_len() == 1
     ));
 }

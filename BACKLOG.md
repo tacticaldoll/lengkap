@@ -43,6 +43,13 @@ mechanism can stand as an independent, user-obligation-driven component.
   in git history and the merged pull request. `openspec/changes/archive/`
   stays empty except `.gitkeep`; `openspec archive` (which recreates that
   folder) is not used.
+- **Independent product authority.** Concrete Lengkap pressure can justify core
+  evolution without Worklane adoption. A real consumer remains a separate
+  graduation test, not a prerequisite for product discovery.
+- **Recoverable ownership boundaries.** Impossible decisions return accumulated
+  state, while structural errors return both unchanged inputs.
+- **Caller-owned slot transfer.** Ordered optional slots are the in-memory
+  checkpoint seam; encoding, versioning, and persistence remain outside.
 
 ## Deferred Work
 
@@ -52,8 +59,6 @@ mechanism can stand as an independent, user-obligation-driven component.
   a separately authorized crates.io and GitHub release.
 - **Semver compatibility gate.** Consider `cargo-semver-checks` only once a
   published baseline exists.
-- **Convenience API.** Add none until a real consumer demonstrates repeated
-  friction with the ownership-first core.
 - **Alternative completion modes.** Quorum, any-of, weighted evidence, dynamic
   slots, and contradiction policy remain out of scope without concrete demand.
 
@@ -62,3 +67,8 @@ mechanism can stand as an independent, user-obligation-driven component.
 - ✓ **Initial project shape (pre-release; archived 2026-07-31).** Contract,
   facade, governance, CI, documentation, and OpenSpec truth are complete. No
   crate, tag, or GitHub release was created.
+- ✓ **Recoverable completion API (pre-release; archived 2026-07-31).**
+  Impossible decisions preserve accumulated state, structural errors return
+  both inputs, ordered slot transfer supports caller-owned checkpoints,
+  progress is inspectable, and method-style adjudication remains equivalent to
+  the free function.

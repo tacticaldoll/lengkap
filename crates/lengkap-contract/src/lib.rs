@@ -1,10 +1,9 @@
 //! A `no_std`, sans-I/O all-of evidence completion core.
 //!
 //! [`Assembly`] owns a fixed ordered set of slots. [`adjudicate`] captures
-//! [`Finding::Produced`] values monotonically, returns [`Decision::Pending`]
-//! while unresolved slots remain, and returns [`Decision::Impossible`] when an
-//! unresolved slot can no longer produce a value. The core does not obtain,
-//! verify, persist, or react to evidence.
+//! [`Finding::Produced`] values monotonically, reports progress without I/O,
+//! and returns owned state at recovery boundaries. The core does not obtain,
+//! verify, persist, serialize, or react to evidence.
 
 #![no_std]
 #![forbid(unsafe_code)]
@@ -48,6 +47,24 @@ impl<Value> Assembly<Value> {
         }
     }
 
+    /// Restore an assembly from its ordered optional slots.
+    ///
+    /// The vector is an in-memory ownership boundary, not a durable encoding.
+    /// Callers own any serialization, versioning, or persistence policy.
+    #[must_use]
+    pub fn from_slots(values: Vec<Option<Value>>) -> Self {
+        Self { values }
+    }
+
+    /// Export this assembly as ordered optional slots.
+    ///
+    /// Passing the result to [`Assembly::from_slots`] preserves slot count,
+    /// order, resolved positions, and owned values.
+    #[must_use]
+    pub fn into_slots(self) -> Vec<Option<Value>> {
+        self.values
+    }
+
     /// Return the fixed number of slots in this assembly.
     #[must_use]
     pub fn len(&self) -> usize {
@@ -71,6 +88,47 @@ impl<Value> Assembly<Value> {
     #[must_use]
     pub fn is_complete(&self) -> bool {
         self.values.iter().all(Option::is_some)
+    }
+
+    /// Return the number of slots that have captured values.
+    #[must_use]
+    pub fn captured_len(&self) -> usize {
+        self.values.iter().filter(|value| value.is_some()).count()
+    }
+
+    /// Return the number of unresolved slots.
+    #[must_use]
+    pub fn remaining_len(&self) -> usize {
+        self.len() - self.captured_len()
+    }
+
+    /// Iterate over unresolved slots in stable ascending order.
+    pub fn unresolved_slots(&self) -> impl Iterator<Item = Slot> + '_ {
+        self.values
+            .iter()
+            .enumerate()
+            .filter_map(|(index, value)| value.is_none().then_some(Slot::new(index)))
+    }
+
+    /// Fold a finite set of located findings into this assembly.
+    ///
+    /// This method is equivalent to the free [`adjudicate`] function.
+    pub fn adjudicate<Cause>(
+        self,
+        findings: impl IntoIterator<Item = LocatedFinding<Value, Cause>>,
+    ) -> Result<Decision<Value, Cause>, AdjudicationError<Value, Cause>> {
+        adjudicate(self, findings)
+    }
+
+    /// Fold one located finding into this assembly.
+    ///
+    /// This is the ownership-first convenience for repeated caller-driven
+    /// observation loops.
+    pub fn adjudicate_one<Cause>(
+        self,
+        finding: LocatedFinding<Value, Cause>,
+    ) -> Result<Decision<Value, Cause>, AdjudicationError<Value, Cause>> {
+        adjudicate(self, core::iter::once(finding))
     }
 }
 
@@ -119,6 +177,8 @@ pub enum Decision<Value, Cause> {
     Ready(Vec<Value>),
     /// An unresolved slot can no longer produce a value.
     Impossible {
+        /// The assembly after all produced findings in this call were captured.
+        assembly: Assembly<Value>,
         /// The lowest unresolved slot reported as impossible.
         slot: Slot,
         /// The caller-supplied reason completion became impossible.
@@ -143,18 +203,25 @@ pub enum StructuralError {
     },
 }
 
-/// A structural error paired with the unchanged input assembly.
+/// A structural error paired with both unchanged adjudication inputs.
 #[derive(Debug, PartialEq, Eq)]
-pub struct AdjudicationError<Value> {
+pub struct AdjudicationError<Value, Cause> {
     assembly: Assembly<Value>,
+    findings: Vec<LocatedFinding<Value, Cause>>,
     kind: StructuralError,
 }
 
-impl<Value> AdjudicationError<Value> {
+impl<Value, Cause> AdjudicationError<Value, Cause> {
     /// Borrow the unchanged assembly supplied to adjudication.
     #[must_use]
     pub const fn assembly(&self) -> &Assembly<Value> {
         &self.assembly
+    }
+
+    /// Borrow the complete finding batch supplied to adjudication.
+    #[must_use]
+    pub fn findings(&self) -> &[LocatedFinding<Value, Cause>] {
+        &self.findings
     }
 
     /// Return the structural error kind.
@@ -169,10 +236,22 @@ impl<Value> AdjudicationError<Value> {
         self.assembly
     }
 
-    /// Split this error into its unchanged assembly and structural error kind.
+    /// Recover the complete finding batch supplied to adjudication.
     #[must_use]
-    pub fn into_parts(self) -> (Assembly<Value>, StructuralError) {
-        (self.assembly, self.kind)
+    pub fn into_findings(self) -> Vec<LocatedFinding<Value, Cause>> {
+        self.findings
+    }
+
+    /// Split this error into both unchanged inputs and its error kind.
+    #[must_use]
+    pub fn into_parts(
+        self,
+    ) -> (
+        Assembly<Value>,
+        Vec<LocatedFinding<Value, Cause>>,
+        StructuralError,
+    ) {
+        (self.assembly, self.findings, self.kind)
     }
 }
 
@@ -185,28 +264,33 @@ impl<Value> AdjudicationError<Value> {
 pub fn adjudicate<Value, Cause>(
     mut assembly: Assembly<Value>,
     findings: impl IntoIterator<Item = LocatedFinding<Value, Cause>>,
-) -> Result<Decision<Value, Cause>, AdjudicationError<Value>> {
+) -> Result<Decision<Value, Cause>, AdjudicationError<Value, Cause>> {
     let findings: Vec<_> = findings.into_iter().collect();
     let mut seen = vec![false; assembly.len()];
+    let mut structural_error = None;
 
     for located in &findings {
         let slot = located.slot();
         let Some(was_seen) = seen.get_mut(slot.index()) else {
-            return Err(AdjudicationError {
-                kind: StructuralError::SlotOutOfRange {
-                    slot,
-                    slot_count: assembly.len(),
-                },
-                assembly,
+            structural_error = Some(StructuralError::SlotOutOfRange {
+                slot,
+                slot_count: assembly.len(),
             });
+            break;
         };
         if *was_seen {
-            return Err(AdjudicationError {
-                kind: StructuralError::DuplicateFinding { slot },
-                assembly,
-            });
+            structural_error = Some(StructuralError::DuplicateFinding { slot });
+            break;
         }
         *was_seen = true;
+    }
+
+    if let Some(kind) = structural_error {
+        return Err(AdjudicationError {
+            assembly,
+            findings,
+            kind,
+        });
     }
 
     let mut impossible: Option<(Slot, Cause)> = None;
@@ -231,7 +315,11 @@ pub fn adjudicate<Value, Cause>(
     }
 
     if let Some((slot, cause)) = impossible {
-        return Ok(Decision::Impossible { slot, cause });
+        return Ok(Decision::Impossible {
+            assembly,
+            slot,
+            cause,
+        });
     }
 
     if assembly.is_complete() {
@@ -275,6 +363,7 @@ mod tests {
         assert_eq!(
             decision,
             Decision::Impossible {
+                assembly: Assembly::from_slots(vec![None, Some("second")]),
                 slot: Slot::new(0),
                 cause: "gone"
             }
@@ -307,6 +396,7 @@ mod tests {
         assert_eq!(
             decision,
             Decision::Impossible {
+                assembly: Assembly::new(4),
                 slot: Slot::new(1),
                 cause: "earlier"
             }
@@ -342,6 +432,10 @@ mod tests {
         );
         assert_eq!(error.assembly().value(Slot::new(0)), Some(&"kept"));
         assert_eq!(error.assembly().value(Slot::new(1)), None);
+        assert_eq!(
+            error.findings(),
+            &[produced(1, "not captured"), produced(2, "outside")]
+        );
     }
 
     #[test]
@@ -363,5 +457,110 @@ mod tests {
             StructuralError::DuplicateFinding { slot: Slot::new(0) }
         );
         assert_eq!(error.assembly().value(Slot::new(0)), Some(&"kept"));
+        assert_eq!(
+            error.findings(),
+            &[produced(0, "ignored"), impossible(0, "also ignored")]
+        );
+    }
+
+    #[test]
+    fn impossible_returns_prior_and_same_call_progress() {
+        let Decision::Pending(assembly) =
+            adjudicate(Assembly::new(3), [produced(0, "first")]).unwrap()
+        else {
+            panic!("two slots remain unresolved");
+        };
+
+        let Decision::Impossible {
+            assembly,
+            slot,
+            cause,
+        } = assembly
+            .adjudicate([produced(2, "third"), impossible(1, "gone")])
+            .unwrap()
+        else {
+            panic!("one unresolved slot is impossible");
+        };
+
+        assert_eq!(slot, Slot::new(1));
+        assert_eq!(cause, "gone");
+        assert_eq!(
+            assembly.into_slots(),
+            vec![Some("first"), None, Some("third")]
+        );
+    }
+
+    #[test]
+    fn slot_transfer_round_trips_empty_partial_and_complete_assemblies() {
+        let cases = [
+            vec![],
+            vec![Some("first"), None, Some("third")],
+            vec![Some("first"), Some("second")],
+        ];
+
+        for slots in cases {
+            let expected = slots.clone();
+            let assembly = Assembly::from_slots(slots);
+            let expected_len = assembly.len();
+            let expected_captured = assembly.captured_len();
+
+            let restored = Assembly::from_slots(assembly.into_slots());
+
+            assert_eq!(restored.len(), expected_len);
+            assert_eq!(restored.captured_len(), expected_captured);
+            assert_eq!(restored.into_slots(), expected);
+        }
+    }
+
+    #[test]
+    fn progress_reports_counts_and_stable_unresolved_slots() {
+        let assembly = Assembly::from_slots(vec![None, Some("second"), None, Some("fourth")]);
+
+        assert_eq!(assembly.captured_len(), 2);
+        assert_eq!(assembly.remaining_len(), 2);
+        assert_eq!(
+            assembly.unresolved_slots().collect::<Vec<_>>(),
+            vec![Slot::new(0), Slot::new(2)]
+        );
+        assert_eq!(assembly.value(Slot::new(1)), Some(&"second"));
+
+        let empty = Assembly::<&str>::new(0);
+        assert_eq!(empty.captured_len(), 0);
+        assert_eq!(empty.remaining_len(), 0);
+        assert_eq!(empty.unresolved_slots().next(), None);
+    }
+
+    #[test]
+    fn method_and_free_function_batch_entrypoints_are_equivalent() {
+        let findings = || [produced(1, "second")];
+
+        assert_eq!(
+            adjudicate(Assembly::new(2), findings()),
+            Assembly::new(2).adjudicate(findings())
+        );
+    }
+
+    #[test]
+    fn single_finding_method_matches_batch_rules_and_recovers_invalid_input() {
+        let Decision::Pending(assembly) = Assembly::new(2)
+            .adjudicate_one(produced(0, "first"))
+            .unwrap()
+        else {
+            panic!("one slot remains unresolved");
+        };
+        assert_eq!(assembly.value(Slot::new(0)), Some(&"first"));
+
+        let error = assembly.adjudicate_one(produced(2, "outside")).unwrap_err();
+        let (assembly, findings, kind) = error.into_parts();
+
+        assert_eq!(assembly.value(Slot::new(0)), Some(&"first"));
+        assert_eq!(findings, vec![produced(2, "outside")]);
+        assert_eq!(
+            kind,
+            StructuralError::SlotOutOfRange {
+                slot: Slot::new(2),
+                slot_count: 2
+            }
+        );
     }
 }

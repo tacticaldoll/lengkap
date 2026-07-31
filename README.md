@@ -8,7 +8,8 @@ Lengkap ("complete; whole, with nothing missing" — Indonesian) is a
 zero-dependency, `no_std + alloc`, sans-I/O core for all-of evidence completion.
 A fixed ordered assembly becomes ready only after every slot has produced a
 value, remains pending while evidence is absent, and becomes impossible when an
-unresolved slot can no longer produce.
+unresolved slot can no longer produce. Impossible and structurally invalid
+outcomes return caller-owned inputs for recovery.
 
 Worklane's fan-in lifecycle supplied the pressure that revealed the mechanism.
 Lengkap does not depend on Worklane and contains no queue vocabulary: callers
@@ -18,13 +19,10 @@ reaction to the decision.
 ## Example
 
 ```rust
-use lengkap::{
-    Assembly, Decision, Finding, LocatedFinding, Slot, adjudicate,
-};
+use lengkap::{Assembly, Decision, Finding, LocatedFinding, Slot};
 
-let decision = adjudicate(
-    Assembly::new(2),
-    [
+let decision = Assembly::new(2)
+    .adjudicate([
         LocatedFinding::<_, &str>::new(
             Slot::new(1),
             Finding::Produced("second"),
@@ -33,12 +31,15 @@ let decision = adjudicate(
             Slot::new(0),
             Finding::Produced("first"),
         ),
-    ],
-)
-.expect("slots are valid");
+    ])
+    .expect("slots are valid");
 
 assert_eq!(decision, Decision::Ready(vec!["first", "second"]));
 ```
+
+`Assembly` also exposes captured and remaining progress, stable unresolved-slot
+iteration, and owned `into_slots` / `from_slots` transfer. Those slots are an
+in-memory checkpoint seam; callers still own encoding, storage, and I/O.
 
 ## Workspace
 
