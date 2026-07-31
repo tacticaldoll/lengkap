@@ -89,11 +89,16 @@ their variants define the finite outcome space. Generic values and causes carry
 domain extensibility.
 
 Removing, renaming, or semantically repurposing any public item is breaking.
-Add convenience only alongside its first real consumer.
+Add public surface only for concrete product pressure documented through
+OpenSpec. A real consumer remains a graduation test, not the sole source of
+product authority.
 
 The repository is pre-release. Do not run `cargo publish`, create a release
 tag, or create a GitHub release without a separately authorized release change.
-Keep `CHANGELOG.md` under `[Unreleased]` until then.
+`CHANGELOG.md` is a strict release ledger and therefore has no `[Unreleased]`
+section. Normal work is recorded in OpenSpec, pull requests, and `BACKLOG.md`.
+A release preparation pull request adds `## [X.Y.Z] - YYYY-MM-DD` and the footer
+link `[X.Y.Z]: https://github.com/tacticaldoll/lengkap/releases/tag/vX.Y.Z`.
 
 ## Commits And Integration
 
@@ -118,6 +123,7 @@ cargo test --workspace
 cargo clippy --workspace --all-targets -- -D warnings
 cargo fmt --all --check
 RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
+cargo +1.88.0 check --workspace --all-targets
 cargo deny check
 cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
 ```

@@ -110,15 +110,21 @@ whose checks prove the intended exit class and diagnostic identity.
 
 Continuous integration SHALL run build, test, clippy with warnings denied,
 format checking, rustdoc with warnings denied, cargo-deny, and the Tianheng
-governance check.
+governance check, and a workspace all-targets check on the declared Rust 1.88
+minimum supported version.
 
 #### Scenario: A required gate fails
 
 - **WHEN** any required repository gate returns a non-zero status
 - **THEN** the CI workflow fails before the change is considered releasable
 
+#### Scenario: The declared MSRV regresses
+
+- **WHEN** any workspace target no longer checks successfully on Rust 1.88
+- **THEN** the dedicated MSRV CI job fails with its own reaction identity
+
 #### Scenario: All required gates pass
 
-- **WHEN** the source, dependencies, documentation, and architecture satisfy all
-  declared checks
+- **WHEN** the source, dependencies, documentation, architecture, and declared
+  minimum Rust version satisfy all checks
 - **THEN** CI reports every required gate as successful

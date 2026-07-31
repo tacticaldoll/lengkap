@@ -40,6 +40,8 @@ assert_eq!(decision, Decision::Ready(vec!["first", "second"]));
 `Assembly` also exposes captured and remaining progress, stable unresolved-slot
 iteration, and owned `into_slots` / `from_slots` transfer. Those slots are an
 in-memory checkpoint seam; callers still own encoding, storage, and I/O.
+Recovered located findings can be consumed back into their slot and owned
+finding, while structural errors provide domain-neutral error messages.
 
 ## Workspace
 
@@ -66,6 +68,7 @@ cargo test --workspace
 cargo clippy --workspace --all-targets -- -D warnings
 cargo fmt --all --check
 RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
+cargo +1.88.0 check --workspace --all-targets
 cargo deny check
 cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
 ```

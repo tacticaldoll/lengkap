@@ -184,7 +184,8 @@ independently of finding order.
 Adjudication SHALL reject an out-of-range slot or duplicate findings for the
 same slot in one call as a structured error. It SHALL validate all findings
 before capture and SHALL return both the original assembly unchanged and the
-complete original finding batch on error.
+complete original finding batch on error. A caller SHALL be able to consume
+each recovered located finding into its slot and owned finding without cloning.
 
 #### Scenario: An out-of-range slot is rejected
 
@@ -209,6 +210,44 @@ complete original finding batch on error.
 
 - **WHEN** values and causes implement neither `Clone` nor serialization traits
 - **THEN** a caller can still recover the unchanged assembly and complete batch
+
+#### Scenario: Recovered findings return owned payloads
+
+- **WHEN** a caller consumes a recovered located finding
+- **THEN** it receives the stable slot and owned produced value or impossible
+  cause
+
+### Requirement: Structural errors have domain-neutral presentation
+
+Structural errors SHALL provide human-readable formatting that identifies the
+invalid structure without formatting caller values or causes. Structural
+errors SHALL integrate with the core error trait, and adjudication errors SHALL
+integrate when their generic payloads satisfy the trait's debug requirement.
+Normal adjudication SHALL NOT require values or causes to implement formatting
+or error traits.
+
+#### Scenario: An out-of-range error is displayed
+
+- **WHEN** a caller formats an out-of-range structural or adjudication error
+- **THEN** the message identifies the addressed slot and fixed slot count
+  without including caller payloads
+
+#### Scenario: A duplicate error is displayed
+
+- **WHEN** a caller formats a duplicate-finding structural or adjudication error
+- **THEN** the message identifies the duplicated slot without including caller
+  payloads
+
+#### Scenario: Error integration is optional for payloads
+
+- **WHEN** values and causes satisfy the debug requirement
+- **THEN** the adjudication error can be used through the core error trait
+
+#### Scenario: Ordinary use retains minimal bounds
+
+- **WHEN** values and causes implement no formatting or error traits
+- **THEN** callers can still construct, adjudicate, and recover them by
+  ownership
 
 ### Requirement: Adjudication entrypoints are equivalent
 

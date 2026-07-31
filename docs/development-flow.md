@@ -49,6 +49,7 @@ cargo test --workspace
 cargo clippy --workspace --all-targets -- -D warnings
 cargo fmt --all --check
 RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
+cargo +1.88.0 check --workspace --all-targets
 cargo deny check
 cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
 ```

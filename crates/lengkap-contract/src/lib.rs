@@ -13,6 +13,7 @@ extern crate alloc;
 
 use alloc::vec;
 use alloc::vec::Vec;
+use core::fmt;
 
 /// The stable zero-based position of one required value.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -166,6 +167,12 @@ impl<Value, Cause> LocatedFinding<Value, Cause> {
     pub const fn finding(&self) -> &Finding<Value, Cause> {
         &self.finding
     }
+
+    /// Split this located finding into its stable slot and owned finding.
+    #[must_use]
+    pub fn into_parts(self) -> (Slot, Finding<Value, Cause>) {
+        (self.slot, self.finding)
+    }
 }
 
 /// The semantic result of structurally valid adjudication.
@@ -202,6 +209,23 @@ pub enum StructuralError {
         slot: Slot,
     },
 }
+
+impl fmt::Display for StructuralError {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::SlotOutOfRange { slot, slot_count } => write!(
+                formatter,
+                "slot {} is outside assembly bounds (slot count: {slot_count})",
+                slot.index()
+            ),
+            Self::DuplicateFinding { slot } => {
+                write!(formatter, "slot {} has more than one finding", slot.index())
+            }
+        }
+    }
+}
+
+impl core::error::Error for StructuralError {}
 
 /// A structural error paired with both unchanged adjudication inputs.
 #[derive(Debug, PartialEq, Eq)]
@@ -253,6 +277,19 @@ impl<Value, Cause> AdjudicationError<Value, Cause> {
     ) {
         (self.assembly, self.findings, self.kind)
     }
+}
+
+impl<Value, Cause> fmt::Display for AdjudicationError<Value, Cause> {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(formatter, "adjudication failed: {}", self.kind)
+    }
+}
+
+impl<Value, Cause> core::error::Error for AdjudicationError<Value, Cause>
+where
+    Value: fmt::Debug,
+    Cause: fmt::Debug,
+{
 }
 
 /// Fold a finite set of located findings into an assembly.
@@ -337,6 +374,7 @@ pub fn adjudicate<Value, Cause>(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use alloc::string::ToString;
 
     fn produced(slot: usize, value: &str) -> LocatedFinding<&str, &str> {
         LocatedFinding::new(Slot::new(slot), Finding::Produced(value))
@@ -562,5 +600,32 @@ mod tests {
                 slot_count: 2
             }
         );
+    }
+
+    #[test]
+    fn structural_errors_have_payload_independent_display_and_error_impls() {
+        let out_of_range = StructuralError::SlotOutOfRange {
+            slot: Slot::new(3),
+            slot_count: 2,
+        };
+        let duplicate = StructuralError::DuplicateFinding { slot: Slot::new(1) };
+
+        assert_eq!(
+            out_of_range.to_string(),
+            "slot 3 is outside assembly bounds (slot count: 2)"
+        );
+        assert_eq!(duplicate.to_string(), "slot 1 has more than one finding");
+
+        let error = Assembly::new(1)
+            .adjudicate_one(produced(2, "outside"))
+            .unwrap_err();
+        assert_eq!(
+            error.to_string(),
+            "adjudication failed: slot 2 is outside assembly bounds (slot count: 1)"
+        );
+
+        fn assert_error<Error: core::error::Error>() {}
+        assert_error::<StructuralError>();
+        assert_error::<AdjudicationError<&str, &str>>();
     }
 }
