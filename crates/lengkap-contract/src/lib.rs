@@ -360,11 +360,7 @@ pub fn adjudicate<Value, Cause>(
     }
 
     if assembly.is_complete() {
-        let values = assembly
-            .values
-            .into_iter()
-            .map(|value| value.expect("complete assembly has no unresolved slot"))
-            .collect();
+        let values = assembly.values.into_iter().flatten().collect();
         Ok(Decision::Ready(values))
     } else {
         Ok(Decision::Pending(assembly))

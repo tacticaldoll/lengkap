@@ -2,13 +2,13 @@
 
 ## Status
 
-**Tier 2 — release candidate.** Version 0.1.0 defines the initial public
-release. The contract is clean, stable enough for a bridge trial, and protected
-by executable governance. It is not Tier 1 until a real consumer adopts the
-registry artifact without forcing domain vocabulary or I/O into the contract.
+**Tier 1 — consumer-proven.** Version 0.1.0 defines the initial public release.
+Worklane consumes that registry artifact while keeping broker access,
+checkpoint persistence, polling, and reactions in its own adapter. Adoption
+required no Worklane vocabulary, I/O, or policy in Lengkap.
 
-An ungraduated Lengkap is a legitimate permanent result. More abstraction is
-not a substitute for adoption evidence.
+This status records completed evidence, not an invitation to widen the core.
+More abstraction remains no substitute for concrete product pressure.
 
 ## Purpose
 
@@ -90,9 +90,9 @@ Lengkap is not:
 - an exactly-once or distributed-consensus claim
 - a Worklane-specific helper disguised with generic names
 
-## Graduation
+## Graduation Evidence
 
-The first intended bridge consumer is Worklane. Its fan-in adapter can map:
+The first bridge consumer is Worklane. Its fan-in adapter maps:
 
 - live work to no finding
 - completed-or-unknown work with stored result bytes to `Produced`
@@ -100,15 +100,21 @@ The first intended bridge consumer is Worklane. Its fan-in adapter can map:
   `Impossible(MissingResult)`
 - dead-lettered work to `Impossible(DeadLettered)`
 
-That mapping is evidence, not automatic adoption. Graduation requires both:
+Tier 1 required both:
 
 1. `lengkap-contract` and `lengkap` are available through a separately reviewed
    public release; and
-2. Worklane or another real consumer adopts that registry artifact without
-   forcing domain vocabulary or I/O into the contract.
+2. a real consumer adopts that registry artifact without forcing domain
+   vocabulary or I/O into the contract.
 
-If adoption reveals a structural mismatch, revise the contract from that
-evidence in the next compatible release. Do not grow the core in anticipation.
+Both conditions are complete. Worklane declares `lengkap = "0.1.0"`, resolves
+the facade and contract from crates.io with registry checksums, and owns the
+mapping and checkpoint adapters around the pure decision. No core API or user
+obligation changed during adoption.
+
+Future consumer pressure may still reveal a structural mismatch. Revise the
+contract only from that evidence in a compatible release; do not grow the core
+in anticipation.
 
 ## Architecture
 

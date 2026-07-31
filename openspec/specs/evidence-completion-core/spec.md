@@ -107,12 +107,14 @@ NOT replace, revoke, or otherwise alter the captured value.
 
 Adjudication SHALL return `Ready` if and only if every slot contains a captured
 value. Ready values SHALL be returned in slot order, independently of finding
-arrival order.
+arrival order. Structurally valid adjudication SHALL construct the ready output
+without an internal panic or unreachable assertion.
 
 #### Scenario: Every slot is complete
 
 - **WHEN** the last unresolved slots receive produced findings
 - **THEN** adjudication returns `Ready` with every value in slot order
+- **THEN** ready-value extraction completes without invoking a panic path
 
 #### Scenario: Findings arrive out of order
 
@@ -123,6 +125,14 @@ arrival order.
 
 - **WHEN** an assembly has zero slots and receives no findings
 - **THEN** adjudication returns `Ready` with an empty value vector
+- **THEN** no value extraction assertion is required
+
+#### Scenario: An assembly remains incomplete
+
+- **WHEN** at least one slot has no captured value and no unresolved slot is
+  impossible
+- **THEN** adjudication returns `Pending` with the assembly intact
+- **THEN** ready-value extraction is not attempted
 
 ### Requirement: Missing evidence remains pending
 

@@ -1,7 +1,7 @@
 # Worklane Bridge Reference
 
-This document records the pressure that shaped Lengkap without creating a
-dependency or committing Worklane to adoption.
+This document records both the pressure that shaped Lengkap and the completed
+Worklane adoption without creating an inward dependency.
 
 ## Mapping
 
@@ -27,14 +27,22 @@ The executable example at
 `crates/lengkap-contract/examples/worklane_fan_in.rs` compiles this mapping
 without importing Worklane.
 
-## Adoption Test
+## Adoption Result
 
-Adoption is warranted only if Worklane can:
+Worklane adopted `lengkap = "0.1.0"` from crates.io after satisfying the
+original test:
 
-1. map its observations without leaking queue vocabulary into Lengkap;
-2. preserve existing public lifecycle semantics;
-3. persist or reconstruct pending assembly state safely; and
-4. remove more lifecycle decision logic than the adapter introduces.
+1. its manifest declares the normal registry dependency and its lockfile
+   records registry sources and checksums for both product crates;
+2. its adapter maps observations without leaking queue vocabulary into
+   Lengkap;
+3. existing public lifecycle semantics remain owned and tested in Worklane;
+4. pending assemblies cross Worklane's own checkpoint adapter as ordered
+   optional slots; and
+5. broker reads, async polling, persistence, and reactions remain outside
+   Lengkap.
 
-If those conditions do not hold, Lengkap remains a valid independent spike and
-Worklane keeps its local mechanism.
+The adoption required no Lengkap dependency, public API, completion mode, or
+user-obligation change. It therefore completes the Tier 1 graduation condition
+without turning the originating Worklane pressure into product authority over
+the core.

@@ -62,12 +62,6 @@ mechanism can stand as an independent, user-obligation-driven component.
 
 ## Deferred Work
 
-- **Worklane bridge adoption.** Reassess fit in Worklane's own OpenSpec process;
-  do not assume origin implies adoption.
-- **Tier 1 graduation.** Requires a real consumer to adopt the registry
-  artifact without forcing domain vocabulary or I/O into the contract.
-- **Semver compatibility gate.** Consider `cargo-semver-checks` only once a
-  published baseline exists.
 - **Alternative completion modes.** Quorum, any-of, weighted evidence, dynamic
   slots, and contradiction policy remain out of scope without concrete demand.
 
@@ -96,3 +90,7 @@ mechanism can stand as an independent, user-obligation-driven component.
   release ledger, two-crate product set, dependency-ordered crates.io
   transaction, external Rust 1.85 consumer proof, and complete-result tag
   boundary are ready; the governor remains repository-only.
+- ✓ **Tier 1 contract hardening (archived 2026-07-31).** Worklane's crates.io
+  adoption proves the consumer boundary, both product crates react to semver
+  drift from 0.1.0, ready extraction contains no internal panic, and a
+  domain-neutral example demonstrates caller-owned checkpoint transfer.

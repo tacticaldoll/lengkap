@@ -29,5 +29,12 @@ and effects remain caller obligations.
   dependency from the core.
 - A fixed all-of model deliberately excludes quorum, dynamic membership, and
   contradiction policy.
-- The project remains Tier 2 until a real bridge consumer and public release
-  jointly prove graduation.
+- At creation, the project remains Tier 2 until a real bridge consumer and
+  public release jointly prove graduation.
+
+## Outcome
+
+After the 0.1.0 public release, Worklane adopted the registry facade without
+moving queue vocabulary or I/O into Lengkap. The condition above is complete,
+so the project is now Tier 1; the isolation decision and its non-goals remain
+unchanged.

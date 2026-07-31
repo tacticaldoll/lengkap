@@ -49,8 +49,9 @@ remain in the contract crate.
 
 The contract and facade manifests SHALL contain complete package metadata.
 Repository and package documentation SHALL identify version 0.1.0 as the
-initial public release while describing project maturity as a release candidate
-until registry adoption by a real consumer proves Tier 1 graduation.
+initial public release. Project maturity SHALL be Tier 1 only after a real
+consumer adopts the registry facade without moving domain vocabulary,
+evidence truth, persistence, scheduling, I/O, or reactions into Lengkap.
 
 #### Scenario: Package metadata is validated before release
 
@@ -64,16 +65,28 @@ until registry adoption by a real consumer proves Tier 1 graduation.
 - **THEN** Cargo resolves `lengkap-contract` version 0.1.0 from the registry
 - **THEN** the complete contract API remains available through the facade root
 
-#### Scenario: Release preparation precedes publication
+#### Scenario: Registry adoption graduates project maturity
 
-- **WHEN** the release preparation commit reaches the default branch but
-  publication has not yet completed
-- **THEN** documentation describes Lengkap as a release candidate
-- **THEN** documentation does not falsely claim completed publication or Tier 1
-  graduation
+- **WHEN** Worklane or another real consumer resolves the published facade from
+  crates.io without a path or source override
+- **AND** that consumer keeps domain vocabulary, evidence truth, persistence,
+  scheduling, I/O, and reactions outside Lengkap
+- **THEN** project and package documentation identify Lengkap as Tier 1
+
+#### Scenario: No real registry consumer has adopted
+
+- **WHEN** no real consumer resolves and uses a published registry artifact
+- **THEN** documentation does not claim Tier 1 maturity
+
+#### Scenario: Adoption leaks consumer policy into the contract
+
+- **WHEN** a consumer can adopt only by adding its domain vocabulary or I/O
+  responsibilities to Lengkap
+- **THEN** that adoption does not satisfy the Tier 1 graduation condition
 
 #### Scenario: Authorized release finalization completes
 
 - **WHEN** both product crates are published and the release is tagged
-- **THEN** the changelog and package documentation identify version 0.1.0
-- **THEN** Tier 1 remains conditional on real registry consumer adoption
+- **THEN** the changelog and package documentation identify the released
+  version
+- **THEN** project maturity reflects the strongest completed consumer evidence

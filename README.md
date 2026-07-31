@@ -1,9 +1,8 @@
 # Lengkap
 
-**Tier 2 — release candidate.** Version 0.1.0 defines the initial public
-release. The contract is implemented, adversarially tested, and governed, but
-Tier 1 graduation still requires adoption of the registry artifact by a real
-bridge consumer.
+**Tier 1 — consumer-proven.** Version 0.1.0 defines the initial public release.
+Worklane consumes the crates.io facade while retaining broker access,
+checkpoint persistence, polling, and reactions in its own adapter.
 
 Lengkap ("complete; whole, with nothing missing" — Indonesian) is a
 zero-dependency, `no_std + alloc`, sans-I/O core for all-of evidence completion.
@@ -59,7 +58,11 @@ cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
 
 The non-toy
 [`worklane_fan_in`](crates/lengkap-contract/examples/worklane_fan_in.rs)
-example shows the intended bridge mapping without adding a Worklane dependency.
+example shows the adopted bridge mapping without adding a Worklane dependency.
+The domain-neutral
+[`checkpoint_restore`](crates/lengkap-contract/examples/checkpoint_restore.rs)
+example shows owned partial-state transfer without prescribing encoding,
+storage, or I/O.
 
 ## Definition Of Done
 
@@ -71,13 +74,17 @@ cargo fmt --all --check
 RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
 cargo +1.85.0 check -p lengkap-contract -p lengkap --all-targets
 cargo +1.88.0 check --workspace --all-targets
+cargo semver-checks --package lengkap-contract --baseline-version 0.1.0
+cargo semver-checks --package lengkap --baseline-version 0.1.0
 cargo deny check
 cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
 ```
 
 The publishable `lengkap-contract` and `lengkap` crates support Rust 1.85.
 Repository-only governance tooling uses Rust 1.88 and is checked separately.
-The product crates are released together, contract first and facade second;
+Public API compatibility is compared with each crate's exact crates.io 0.1.0
+baseline. The product crates are released together, contract first and facade
+second;
 `lengkap-governance` is never published. See
 [`docs/releasing.md`](docs/releasing.md) for the transaction boundary.
 
