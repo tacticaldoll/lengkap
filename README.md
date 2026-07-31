@@ -1,46 +1,75 @@
-# rust-openspec-starter
+# Lengkap
 
-An opinionated starter for Rust projects that use OpenSpec, ADRs, conventional
-commits, and AI-agent-friendly governance from day one.
+**Tier 2 — release candidate, not published.** The contract is implemented,
+adversarially tested, and governed, but graduation requires adoption by a real
+bridge consumer and a separate authorized public release.
 
-This repository is intentionally small. It provides the process skeleton for a
-new project, not product-specific architecture.
+Lengkap ("complete; whole, with nothing missing" — Indonesian) is a
+zero-dependency, `no_std + alloc`, sans-I/O core for all-of evidence completion.
+A fixed ordered assembly becomes ready only after every slot has produced a
+value, remains pending while evidence is absent, and becomes impossible when an
+unresolved slot can no longer produce.
 
-## Use
+Worklane's fan-in lifecycle supplied the pressure that revealed the mechanism.
+Lengkap does not depend on Worklane and contains no queue vocabulary: callers
+own evidence truth, domain mapping, persistence, scheduling, I/O, and every
+reaction to the decision.
 
-1. Create a new repository from this starter.
-2. Replace placeholder project metadata in `PROJECT.md`, `README.md`, and
-   `Cargo.toml`.
-3. Install or expose the OpenSpec CLI in your shell.
-4. Generate local agent shims for your editor or agent:
+## Example
 
-   ```bash
-   openspec init --tools codex
-   # or: openspec init --tools claude,cursor,github-copilot
-   ```
+```rust
+use lengkap::{
+    Assembly, Decision, Finding, LocatedFinding, Slot, adjudicate,
+};
 
-5. Start the first project-specific change with OpenSpec:
+let decision = adjudicate(
+    Assembly::new(2),
+    [
+        LocatedFinding::<_, &str>::new(
+            Slot::new(1),
+            Finding::Produced("second"),
+        ),
+        LocatedFinding::new(
+            Slot::new(0),
+            Finding::Produced("first"),
+        ),
+    ],
+)
+.expect("slots are valid");
 
-   ```bash
-   openspec new change "initial-project-shape"
-   ```
+assert_eq!(decision, Decision::Ready(vec!["first", "second"]));
+```
 
-   This change should replace placeholders, choose the real crate layout, add
-   the first specs, and make the Rust Definition of Done runnable.
+## Workspace
 
-## Included
+- `crates/lengkap-contract` — the complete zero-dependency mechanism.
+- `crates/lengkap` — the recommended, logic-free re-export facade.
+- `crates/lengkap-governance` — the unpublished Tianheng constitution and
+  reaction proofs.
 
-- `AGENTS.md` - repository rules for AI coding agents and humans.
-- `PROJECT.md` - project-specific contract, terminology, and priorities.
-- `docs/development-flow.md` - short OpenSpec and commit checklist.
-- `docs/adr/` - architecture decision record skeleton.
-- `openspec/` - empty OpenSpec structure ready for specs and changes.
-- A Rust workspace policy anchor in `Cargo.toml`. It intentionally has no
-  crates until the first project-specific change chooses the real layout.
+Run the architecture gate with:
 
-Generated agent shims such as `.codex/` and `.claude/` are per-clone local
-files and should not be committed.
+```bash
+cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
+```
+
+The non-toy
+[`worklane_fan_in`](crates/lengkap-contract/examples/worklane_fan_in.rs)
+example shows the intended bridge mapping without adding a Worklane dependency.
+
+## Definition Of Done
+
+```bash
+cargo build --workspace
+cargo test --workspace
+cargo clippy --workspace --all-targets -- -D warnings
+cargo fmt --all --check
+RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
+cargo deny check
+cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
+```
 
 ## License
 
-Licensed under either of [Apache-2.0](LICENSE-APACHE) or [MIT](LICENSE-MIT), at your option.
+Licensed under either of [Apache-2.0](LICENSE-APACHE) or
+[MIT](LICENSE-MIT), at your option.
