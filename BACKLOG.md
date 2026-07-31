@@ -94,3 +94,7 @@ mechanism can stand as an independent, user-obligation-driven component.
   adoption proves the consumer boundary, both product crates react to semver
   drift from 0.1.0, ready extraction contains no internal panic, and a
   domain-neutral example demonstrates caller-owned checkpoint transfer.
+- ✓ **Version 0.1.1 release preparation (archived 2026-07-31).** Compatible
+  workspace metadata, the strict release ledger, both 0.1.0 semver baselines,
+  contract dry-run, staged facade boundary, and complete-result publication
+  transaction are ready; the governor remains repository-only.
