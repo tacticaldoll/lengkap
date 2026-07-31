@@ -4,11 +4,26 @@ This file is a ledger of released versions, based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Lengkap is currently unpublished, so the ledger has no version entries. Normal
-development is recorded in OpenSpec changes, pull requests, and `BACKLOG.md`,
-not in an `[Unreleased]` section.
+Normal development is recorded in OpenSpec changes, pull requests, and
+`BACKLOG.md`, not in an `[Unreleased]` section.
 
 A release preparation pull request adds a heading in this form:
 `## [X.Y.Z] - YYYY-MM-DD`. Its footer links the version to the matching GitHub
 tag:
 `[X.Y.Z]: https://github.com/tacticaldoll/lengkap/releases/tag/vX.Y.Z`.
+
+## [0.1.0] - 2026-07-31
+
+### Added
+
+- A zero-dependency, unconditional `no_std + alloc` contract for fixed,
+  ordered all-of evidence completion.
+- Monotonic first-value capture with deterministic `Pending`, `Ready`, and
+  recoverable `Impossible` decisions.
+- Atomic structural validation that returns unchanged caller-owned inputs.
+- Caller-owned checkpoint transfer and stable progress inspection.
+- The logic-free `lengkap` facade as the recommended public entrypoint.
+- Executable Tianheng architecture governance, split Rust 1.85 product and Rust
+  1.88 repository gates, and bounded exhaustive contract tests.
+
+[0.1.0]: https://github.com/tacticaldoll/lengkap/releases/tag/v0.1.0

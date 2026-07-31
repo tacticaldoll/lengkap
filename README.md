@@ -1,8 +1,9 @@
 # Lengkap
 
-**Tier 2 — release candidate, not published.** The contract is implemented,
-adversarially tested, and governed, but graduation requires adoption by a real
-bridge consumer and a separate authorized public release.
+**Tier 2 — release candidate.** Version 0.1.0 defines the initial public
+release. The contract is implemented, adversarially tested, and governed, but
+Tier 1 graduation still requires adoption of the registry artifact by a real
+bridge consumer.
 
 Lengkap ("complete; whole, with nothing missing" — Indonesian) is a
 zero-dependency, `no_std + alloc`, sans-I/O core for all-of evidence completion.
@@ -76,6 +77,9 @@ cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
 
 The publishable `lengkap-contract` and `lengkap` crates support Rust 1.85.
 Repository-only governance tooling uses Rust 1.88 and is checked separately.
+The product crates are released together, contract first and facade second;
+`lengkap-governance` is never published. See
+[`docs/releasing.md`](docs/releasing.md) for the transaction boundary.
 
 ## License
 

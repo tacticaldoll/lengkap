@@ -3,7 +3,7 @@
 ## Purpose
 
 Define `lengkap` as the complete logic-free public re-export of
-`lengkap-contract` and keep its pre-release package state explicit.
+`lengkap-contract` and keep its registry distribution state explicit.
 
 ## Requirements
 
@@ -47,18 +47,33 @@ remain in the contract crate.
 
 ### Requirement: Release state is explicit
 
-The contract and facade manifests SHALL contain complete package metadata, while
-repository documentation SHALL describe the project as unreleased until a
-separate authorized release finalization occurs.
+The contract and facade manifests SHALL contain complete package metadata.
+Repository and package documentation SHALL identify version 0.1.0 as the
+initial public release while describing project maturity as a release candidate
+until registry adoption by a real consumer proves Tier 1 graduation.
 
 #### Scenario: Package metadata is validated before release
 
 - **WHEN** the workspace is packaged in verification mode
 - **THEN** each publishable crate has the metadata and included files required
-  for a future crates.io publication
+  for crates.io publication
 
-#### Scenario: Initial project shape is integrated
+#### Scenario: Facade resolves the published contract
 
-- **WHEN** this change reaches the default branch
-- **THEN** no crates.io publication, release tag, or GitHub release has been
-  created by the change
+- **WHEN** a registry consumer depends on `lengkap` version 0.1.0
+- **THEN** Cargo resolves `lengkap-contract` version 0.1.0 from the registry
+- **THEN** the complete contract API remains available through the facade root
+
+#### Scenario: Release preparation precedes publication
+
+- **WHEN** the release preparation commit reaches the default branch but
+  publication has not yet completed
+- **THEN** documentation describes Lengkap as a release candidate
+- **THEN** documentation does not falsely claim completed publication or Tier 1
+  graduation
+
+#### Scenario: Authorized release finalization completes
+
+- **WHEN** both product crates are published and the release is tagged
+- **THEN** the changelog and package documentation identify version 0.1.0
+- **THEN** Tier 1 remains conditional on real registry consumer adoption

@@ -2,10 +2,10 @@
 
 ## Status
 
-**Tier 2 — release candidate, unpublished.** The contract is clean, stable
-enough for a bridge trial, and protected by executable governance. It is not
-Tier 1 until a real consumer adopts it and the contract and facade are actually
-published through a separately authorized release.
+**Tier 2 — release candidate.** Version 0.1.0 defines the initial public
+release. The contract is clean, stable enough for a bridge trial, and protected
+by executable governance. It is not Tier 1 until a real consumer adopts the
+registry artifact without forcing domain vocabulary or I/O into the contract.
 
 An ungraduated Lengkap is a legitimate permanent result. More abstraction is
 not a substitute for adoption evidence.
@@ -102,13 +102,13 @@ The first intended bridge consumer is Worklane. Its fan-in adapter can map:
 
 That mapping is evidence, not automatic adoption. Graduation requires both:
 
-1. Worklane or another real consumer adopts Lengkap without forcing domain
-   vocabulary or I/O into the contract; and
-2. `lengkap-contract` and `lengkap` are published through a separately
-   reviewed release.
+1. `lengkap-contract` and `lengkap` are available through a separately reviewed
+   public release; and
+2. Worklane or another real consumer adopts that registry artifact without
+   forcing domain vocabulary or I/O into the contract.
 
-If the bridge reveals a structural mismatch, revise the contract from that
-evidence before publication. Do not grow the core in anticipation.
+If adoption reveals a structural mismatch, revise the contract from that
+evidence in the next compatible release. Do not grow the core in anticipation.
 
 ## Architecture
 

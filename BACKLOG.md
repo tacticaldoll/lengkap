@@ -64,8 +64,8 @@ mechanism can stand as an independent, user-obligation-driven component.
 
 - **Worklane bridge adoption.** Reassess fit in Worklane's own OpenSpec process;
   do not assume origin implies adoption.
-- **Tier 1 graduation and first release.** Requires a real bridge consumer and
-  a separately authorized crates.io and GitHub release.
+- **Tier 1 graduation.** Requires a real consumer to adopt the registry
+  artifact without forcing domain vocabulary or I/O into the contract.
 - **Semver compatibility gate.** Consider `cargo-semver-checks` only once a
   published baseline exists.
 - **Alternative completion modes.** Quorum, any-of, weighted evidence, dynamic
@@ -92,3 +92,7 @@ mechanism can stand as an independent, user-obligation-driven component.
 - ✓ **Product MSRV alignment (archived 2026-07-31).** The publishable contract
   and facade declare and verify Rust 1.85 compatibility, while the unpublished
   governor and full repository retain a distinct Rust 1.88 tooling gate.
+- ✓ **Version 0.1.0 release preparation (archived 2026-07-31).** The initial
+  release ledger, two-crate product set, dependency-ordered crates.io
+  transaction, external Rust 1.85 consumer proof, and complete-result tag
+  boundary are ready; the governor remains repository-only.
