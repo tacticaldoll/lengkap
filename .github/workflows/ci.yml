@@ -5,6 +5,16 @@ on:
   pull_request:
 
 jobs:
+  msrv:
+    name: Minimum supported Rust
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: install Rust 1.88.0
+        run: rustup toolchain install 1.88.0 --profile minimal
+      - name: check every workspace target on Rust 1.88.0
+        run: cargo +1.88.0 check --workspace --all-targets
+
   definition-of-done:
     name: Definition of Done
     runs-on: ubuntu-latest

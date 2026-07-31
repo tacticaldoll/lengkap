@@ -6,7 +6,9 @@ That includes recoverable decisions and errors, caller-owned slot transfer,
 progress inspection, and method-style adjudication.
 
 This repository is currently pre-release. See the root `README.md` and
-`PROJECT.md` for the full contract and maturity status.
+`PROJECT.md` in the
+[Lengkap repository](https://github.com/tacticaldoll/lengkap) for the full
+contract and maturity status.
 
 ## License
 

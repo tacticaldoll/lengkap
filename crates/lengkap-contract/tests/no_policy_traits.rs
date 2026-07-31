@@ -40,7 +40,20 @@ fn checkpoint_and_error_recovery_need_no_policy_traits() {
 
     assert_eq!(assembly.value(Slot::new(0)).map(|value| value.0), Some(3));
     assert_eq!(assembly.value(Slot::new(1)).map(|value| value.0), None);
-    assert_eq!(findings.len(), 2);
+    let mut findings = findings.into_iter();
+    let (slot, finding) = findings.next().expect("produced finding").into_parts();
+    assert_eq!(slot, Slot::new(1));
+    let Finding::Produced(value) = finding else {
+        panic!("the first recovered finding must own its produced value");
+    };
+    assert_eq!(value.0, 7);
+
+    let (slot, finding) = findings.next().expect("impossible finding").into_parts();
+    assert_eq!(slot, Slot::new(2));
+    let Finding::Impossible(CauseWithoutPolicyTraits) = finding else {
+        panic!("the second recovered finding must own its cause");
+    };
+    assert!(findings.next().is_none());
     assert_eq!(
         kind,
         lengkap_contract::StructuralError::SlotOutOfRange {

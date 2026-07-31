@@ -35,7 +35,10 @@ what effect follows a decision.
   unresolved impossible slot wins, regardless of finding arrival order.
 - **Atomic structural validation.** Out-of-range and same-call duplicate
   findings return the original assembly unchanged with the complete rejected
-  finding batch.
+  finding batch; each located finding can be consumed back into its slot and
+  owned finding.
+- **Domain-neutral errors.** Structural failures provide useful formatting
+  without inspecting or imposing formatting bounds on user values and causes.
 - **Caller-owned checkpoint seam.** Ordered optional slots can leave and
   restore an assembly without prescribing serialization or persistence.
 - **Inspectable progress.** Captured and remaining counts plus stable
@@ -124,8 +127,9 @@ independent from the graph it judges. The generated Tianheng projection is in
 ## Change Prioritization
 
 1. Completion correctness and preservation of user obligations.
-2. Fit learned from a real bridge consumer.
-3. Documentation and ergonomics around the existing contract.
-4. Graduation and release, only after their explicit conditions hold.
+2. Independent product usability under those explicit obligations.
+3. Fit learned from a real bridge consumer.
+4. Documentation and ergonomics around the existing contract.
+5. Graduation and release, only after their explicit conditions hold.
 
 Potential features without a current consumer belong in `BACKLOG.md`.

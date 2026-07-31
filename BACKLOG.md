@@ -50,6 +50,14 @@ mechanism can stand as an independent, user-obligation-driven component.
   state, while structural errors return both unchanged inputs.
 - **Caller-owned slot transfer.** Ordered optional slots are the in-memory
   checkpoint seam; encoding, versioning, and persistence remain outside.
+- **Bounded exhaustive evidence.** The small finite contract is checked across
+  every state mask, unique-slot finding assignment, and arrival permutation
+  through four slots without a test dependency.
+- **Reactive MSRV.** Rust 1.88 is a dedicated workspace all-targets CI
+  reaction, not manifest metadata alone.
+- **Release-ledger changelog.** Pending work stays in OpenSpec, pull requests,
+  and this backlog; `CHANGELOG.md` gains entries only during tagged release
+  preparation.
 
 ## Deferred Work
 
@@ -72,3 +80,7 @@ mechanism can stand as an independent, user-obligation-driven component.
   both inputs, ordered slot transfer supports caller-owned checkpoints,
   progress is inspectable, and method-style adjudication remains equivalent to
   the free function.
+- ✓ **Pre-release contract hardening (archived 2026-07-31).** Recovered
+  findings return owned payloads, errors are domain-neutral, bounded
+  state/permutation and invalid-input tests defend the contract, Rust 1.88 is
+  enforced in CI, and release/license documentation is consistent.
