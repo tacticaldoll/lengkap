@@ -90,6 +90,34 @@ workspace crate it judges.
 - **WHEN** the governor manifest has Tianheng as its sole normal dependency
 - **THEN** the governor-independence boundary passes
 
+### Requirement: The governor is repository-local
+
+`lengkap-governance` SHALL explicitly declare itself unpublished and SHALL rely
+on the repository-root license files rather than carry release-package license
+copies. Publishable product crates SHALL retain the license files needed in
+their independently distributed packages.
+
+#### Scenario: Governor package metadata is inspected
+
+- **WHEN** a maintainer inspects `lengkap-governance` package metadata
+- **THEN** the manifest declares `publish = false` directly
+- **THEN** the result does not depend on the workspace publication default
+
+#### Scenario: Governor distribution is attempted
+
+- **WHEN** release preparation enumerates publishable Lengkap packages
+- **THEN** `lengkap-governance` is excluded from the release set
+- **THEN** only repository-root license files govern its repository-local
+  packaging convention
+
+#### Scenario: Product crate packaging is inspected
+
+- **WHEN** either publishable product crate is prepared as a standalone Cargo
+  package
+- **THEN** its package contains both Apache-2.0 and MIT license files
+- **THEN** removing governor-local copies does not remove product license
+  artifacts
+
 ### Requirement: Every law has reaction evidence
 
 Each enforced boundary SHALL have a focused violating fixture and clean control
