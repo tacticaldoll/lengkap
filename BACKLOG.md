@@ -53,8 +53,9 @@ mechanism can stand as an independent, user-obligation-driven component.
 - **Bounded exhaustive evidence.** The small finite contract is checked across
   every state mask, unique-slot finding assignment, and arrival permutation
   through four slots without a test dependency.
-- **Reactive MSRV.** Rust 1.88 is a dedicated workspace all-targets CI
-  reaction, not manifest metadata alone.
+- **Split reactive MSRV.** Publishable product crates support Rust 1.85 for
+  Worklane compatibility; the unpublished governor and full repository retain
+  a separately enforced Rust 1.88 tooling floor.
 - **Release-ledger changelog.** Pending work stays in OpenSpec, pull requests,
   and this backlog; `CHANGELOG.md` gains entries only during tagged release
   preparation.
@@ -88,3 +89,6 @@ mechanism can stand as an independent, user-obligation-driven component.
   governance package is explicitly unpublished and relies on repository-root
   licenses, while publishable product crates retain self-contained license
   artifacts.
+- ✓ **Product MSRV alignment (archived 2026-07-31).** The publishable contract
+  and facade declare and verify Rust 1.85 compatibility, while the unpublished
+  governor and full repository retain a distinct Rust 1.88 tooling gate.

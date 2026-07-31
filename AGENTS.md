@@ -123,10 +123,15 @@ cargo test --workspace
 cargo clippy --workspace --all-targets -- -D warnings
 cargo fmt --all --check
 RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
+cargo +1.85.0 check -p lengkap-contract -p lengkap --all-targets
 cargo +1.88.0 check --workspace --all-targets
 cargo deny check
 cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
 ```
+
+The Rust 1.85 gate is the public product contract. The Rust 1.88 full-workspace
+gate covers repository-only governance tooling as a separate compatibility
+surface.
 
 Do not check a task off, sync, archive, or integrate while any required gate
 fails.

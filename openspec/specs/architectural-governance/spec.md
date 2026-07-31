@@ -136,23 +136,42 @@ whose checks prove the intended exit class and diagnostic identity.
 
 ### Requirement: CI enforces the repository gates
 
+`lengkap-contract` and `lengkap` SHALL each declare Rust 1.85 as their minimum
+supported Rust version. The unpublished `lengkap-governance` package SHALL
+inherit the repository's Rust 1.88 tooling floor.
+
 Continuous integration SHALL run build, test, clippy with warnings denied,
 format checking, rustdoc with warnings denied, cargo-deny, and the Tianheng
-governance check, and a workspace all-targets check on the declared Rust 1.88
-minimum supported version.
+governance check. It SHALL also run a product all-targets check on Rust 1.85 and
+a full-workspace all-targets check on Rust 1.88 as separately identified
+reactions.
 
 #### Scenario: A required gate fails
 
 - **WHEN** any required repository gate returns a non-zero status
 - **THEN** the CI workflow fails before the change is considered releasable
 
-#### Scenario: The declared MSRV regresses
+#### Scenario: Product compatibility regresses
+
+- **WHEN** either publishable product crate no longer checks successfully on
+  Rust 1.85
+- **THEN** the product MSRV CI job fails with its own reaction identity
+
+#### Scenario: Repository tooling compatibility regresses
 
 - **WHEN** any workspace target no longer checks successfully on Rust 1.88
-- **THEN** the dedicated MSRV CI job fails with its own reaction identity
+- **THEN** the full-workspace MSRV CI job fails with its own reaction identity
+
+#### Scenario: Governor is outside the product MSRV
+
+- **WHEN** CI checks the Rust 1.85 product compatibility contract
+- **THEN** it checks `lengkap-contract` and `lengkap` with all targets
+- **THEN** it does not require the unpublished governor to compile on Rust 1.85
 
 #### Scenario: All required gates pass
 
-- **WHEN** the source, dependencies, documentation, architecture, and declared
-  minimum Rust version satisfy all checks
+- **WHEN** the product crates support Rust 1.85 and the full repository supports
+  Rust 1.88
+- **AND** source, dependencies, documentation, and architecture satisfy every
+  other required check
 - **THEN** CI reports every required gate as successful

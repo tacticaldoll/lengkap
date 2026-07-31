@@ -49,10 +49,15 @@ cargo test --workspace
 cargo clippy --workspace --all-targets -- -D warnings
 cargo fmt --all --check
 RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
+cargo +1.85.0 check -p lengkap-contract -p lengkap --all-targets
 cargo +1.88.0 check --workspace --all-targets
 cargo deny check
 cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
 ```
+
+Rust 1.85 is the compatibility contract for the publishable product crates.
+Rust 1.88 is the tooling floor for the complete repository, including the
+unpublished governor.
 
 Release finalization is a separate change. Normal feature or repository-shape
 changes do not publish crates, create tags, or create GitHub releases.
