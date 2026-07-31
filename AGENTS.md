@@ -93,12 +93,18 @@ Add public surface only for concrete product pressure documented through
 OpenSpec. A real consumer remains a graduation test, not the sole source of
 product authority.
 
-The repository is pre-release. Do not run `cargo publish`, create a release
-tag, or create a GitHub release without a separately authorized release change.
-`CHANGELOG.md` is a strict release ledger and therefore has no `[Unreleased]`
-section. Normal work is recorded in OpenSpec, pull requests, and `BACKLOG.md`.
-A release preparation pull request adds `## [X.Y.Z] - YYYY-MM-DD` and the footer
-link `[X.Y.Z]: https://github.com/tacticaldoll/lengkap/releases/tag/vX.Y.Z`.
+Do not run `cargo publish`, create a release tag, or create a GitHub release
+without a separately authorized release change. `CHANGELOG.md` is a strict
+release ledger and therefore has no `[Unreleased]` section. Normal work is
+recorded in OpenSpec, pull requests, and `BACKLOG.md`. A release preparation
+pull request adds `## [X.Y.Z] - YYYY-MM-DD` and the footer link
+`[X.Y.Z]: https://github.com/tacticaldoll/lengkap/releases/tag/vX.Y.Z`.
+
+The public release set is `lengkap-contract` followed by the dependent
+`lengkap` facade at the same version. Verify the complete workspace, publish
+and verify the contract, then verify and publish the facade.
+`lengkap-governance` remains unpublished. Tag only after both registry
+artifacts and a fresh external consumer have been verified.
 
 ## Commits And Integration
 

@@ -22,7 +22,7 @@ truth, encoding, storage, I/O, scheduling, and reactions.
 Most applications should depend on the `lengkap` facade. Depend directly on
 this crate only when the contract boundary itself is the desired dependency.
 
-This repository is currently pre-release. See the root `README.md` and
+Version 0.1.0 defines the initial public release. See the root `README.md` and
 `PROJECT.md` in the
 [Lengkap repository](https://github.com/tacticaldoll/lengkap) for the full
 contract and maturity status.
