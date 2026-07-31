@@ -84,3 +84,7 @@ mechanism can stand as an independent, user-obligation-driven component.
   findings return owned payloads, errors are domain-neutral, bounded
   state/permutation and invalid-input tests defend the contract, Rust 1.88 is
   enforced in CI, and release/license documentation is consistent.
+- ✓ **Repository-local governor packaging (archived 2026-07-31).** The
+  governance package is explicitly unpublished and relies on repository-root
+  licenses, while publishable product crates retain self-contained license
+  artifacts.

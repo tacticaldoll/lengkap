@@ -7,8 +7,3 @@ surface.
 See the
 [Lengkap repository](https://github.com/tacticaldoll/lengkap) for the accepted
 architecture, generated projection, and local invocation.
-
-## License
-
-Licensed under either [Apache-2.0](LICENSE-APACHE) or [MIT](LICENSE-MIT), at
-your option.
