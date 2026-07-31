@@ -143,8 +143,9 @@ inherit the repository's Rust 1.88 tooling floor.
 Continuous integration SHALL run build, test, clippy with warnings denied,
 format checking, rustdoc with warnings denied, cargo-deny, and the Tianheng
 governance check. It SHALL also run a product all-targets check on Rust 1.85 and
-a full-workspace all-targets check on Rust 1.88 as separately identified
-reactions.
+a full-workspace all-targets check on Rust 1.88, and a semver compatibility
+check for `lengkap-contract` and `lengkap` against their published crates.io
+0.1.0 baselines as separately identified reactions.
 
 #### Scenario: A required gate fails
 
@@ -162,16 +163,31 @@ reactions.
 - **WHEN** any workspace target no longer checks successfully on Rust 1.88
 - **THEN** the full-workspace MSRV CI job fails with its own reaction identity
 
-#### Scenario: Governor is outside the product MSRV
+#### Scenario: Public API compatibility regresses
 
-- **WHEN** CI checks the Rust 1.85 product compatibility contract
-- **THEN** it checks `lengkap-contract` and `lengkap` with all targets
-- **THEN** it does not require the unpublished governor to compile on Rust 1.85
+- **WHEN** either publishable product crate removes or incompatibly changes
+  public API relative to its crates.io 0.1.0 baseline
+- **THEN** the semver compatibility CI job fails with its own reaction identity
+
+#### Scenario: Published baseline is unavailable
+
+- **WHEN** crates.io cannot supply the exact 0.1.0 baseline for either product
+  crate
+- **THEN** the semver compatibility CI job fails instead of silently skipping
+  the comparison
+
+#### Scenario: Governor is outside the product reactions
+
+- **WHEN** CI checks the Rust 1.85 and semver product compatibility contracts
+- **THEN** it checks `lengkap-contract` and `lengkap`
+- **THEN** it does not require the unpublished governor to satisfy either
+  product reaction
 
 #### Scenario: All required gates pass
 
-- **WHEN** the product crates support Rust 1.85 and the full repository supports
-  Rust 1.88
+- **WHEN** the product crates support Rust 1.85 and remain semver-compatible
+  with 0.1.0
+- **AND** the full repository supports Rust 1.88
 - **AND** source, dependencies, documentation, and architecture satisfy every
   other required check
 - **THEN** CI reports every required gate as successful

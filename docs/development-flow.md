@@ -51,13 +51,16 @@ cargo fmt --all --check
 RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
 cargo +1.85.0 check -p lengkap-contract -p lengkap --all-targets
 cargo +1.88.0 check --workspace --all-targets
+cargo semver-checks --package lengkap-contract --baseline-version 0.1.0
+cargo semver-checks --package lengkap --baseline-version 0.1.0
 cargo deny check
 cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
 ```
 
 Rust 1.85 is the compatibility contract for the publishable product crates.
 Rust 1.88 is the tooling floor for the complete repository, including the
-unpublished governor.
+unpublished governor. The semver reactions compare only those product crates
+with their exact crates.io 0.1.0 baselines.
 
 Release finalization is a separate change. Normal feature or repository-shape
 changes do not publish crates, create tags, or create GitHub releases.

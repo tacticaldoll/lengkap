@@ -13,7 +13,13 @@ publishes only two product crates:
 Prepare release content through a pull request whose squash title is
 `chore(release): prepare X.Y.Z`. The changelog entry uses the release date and
 links to `vX.Y.Z`. Before merging, run every repository gate, inspect both
-product package archives, and run a publication dry-run for the contract.
+product package archives, compare both product APIs with their exact crates.io
+0.1.0 baselines, and run a publication dry-run for the contract:
+
+```bash
+cargo semver-checks --package lengkap-contract --baseline-version 0.1.0
+cargo semver-checks --package lengkap --baseline-version 0.1.0
+```
 
 After the squash commit reaches `main`, re-run the complete gates and verify
 that the working tree is clean and exactly at that commit.
