@@ -1,10 +1,21 @@
 [workspace]
 resolver = "2"
-members = []
+members = [
+    "crates/lengkap",
+    "crates/lengkap-contract",
+    "crates/lengkap-governance",
+]
 
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
+rust-version = "1.88"
 license = "MIT OR Apache-2.0"
+repository = "https://github.com/tacticaldoll/lengkap"
+keywords = ["all-of", "evidence", "sans-io", "state-machine", "no-std"]
+categories = ["rust-patterns", "no-std"]
+publish = false
 
 [workspace.dependencies]
+tianheng = "0.3.0"
+lengkap-contract = { path = "crates/lengkap-contract", version = "0.1.0" }

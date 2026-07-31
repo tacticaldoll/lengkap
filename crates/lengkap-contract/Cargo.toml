@@ -1,0 +1,14 @@
+[package]
+name = "lengkap-contract"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+readme = "README.md"
+keywords.workspace = true
+categories.workspace = true
+description = "A no-std, sans-I/O all-of evidence completion core."
+publish = true
+
+[dependencies]

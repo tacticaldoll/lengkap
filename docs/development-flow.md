@@ -44,8 +44,14 @@ Avoid:
 Run these from the workspace root:
 
 ```bash
-cargo build
-cargo test
-cargo clippy --all-targets -- -D warnings
+cargo build --workspace
+cargo test --workspace
+cargo clippy --workspace --all-targets -- -D warnings
 cargo fmt --all --check
+RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
+cargo deny check
+cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
 ```
+
+Release finalization is a separate change. Normal feature or repository-shape
+changes do not publish crates, create tags, or create GitHub releases.

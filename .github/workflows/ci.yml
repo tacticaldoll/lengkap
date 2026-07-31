@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  definition-of-done:
+    name: Definition of Done
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: build, test, lint, format, and document
+        run: |
+          cargo build --workspace
+          cargo test --workspace
+          cargo clippy --workspace --all-targets -- -D warnings
+          cargo fmt --all --check
+          RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
+
+  supply-chain:
+    name: Supply chain
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: licenses, advisories, bans, and sources
+        uses: EmbarkStudios/cargo-deny-action@v2
+        with:
+          command: check
+
+  governance:
+    name: Tianheng reaction
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: architecture constitution passes
+        run: >-
+          cargo run -p lengkap-governance --
+          check --manifest-path Cargo.toml

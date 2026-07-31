@@ -3,50 +3,32 @@
 Meta-guideline for any AI coding agent working in this repository. Read this
 first.
 
-## This Project Uses OpenSpec
+## Source Of Truth And Workflow
 
-The source of truth lives in `openspec/`, which is version-controlled and
-agent-agnostic.
+This project uses OpenSpec. Current behavior lives in `openspec/specs/`; active
+delta proposals live in `openspec/changes/`.
 
-- `openspec/specs/` - the living specification of what the system currently is.
-- `openspec/changes/` - active change proposals as delta specs.
-- `openspec/changes/archive/` - kept empty except `.gitkeep`. A synced and
-  verified change is removed, not archived into a folder; its deliberation
-  lives in git history and the merged pull request.
-
-Per-agent command files such as `.codex/`, `.claude/`, and editor-specific shims
-are per-clone generated files and are not committed. After cloning, generate
-your own with:
-
-```bash
-openspec init --tools codex
-# or: openspec init --tools claude,cursor,github-copilot
-```
-
-## Workflow
-
-Follow this lifecycle:
+Follow:
 
 ```text
 explore -> propose -> apply -> sync -> archive
 ```
 
-1. **Explore**: think and investigate only. Do not write feature code outside of
-   a change.
-2. **Propose**: create a change with `proposal.md`, `design.md`, `tasks.md`, and
-   delta specs.
-3. **Apply**: implement tasks one at a time, checking each off in `tasks.md`
-   only after verification.
-4. **Sync**: merge verified delta specs back into `openspec/specs/`. The change
-   directory stays in place; it remains active for verification.
-5. **Archive**: a distinct gate from sync. Once the synced change is verified,
-   remove the completed change directory. No `openspec/changes/archive/`
-   folder is created — archive means deletion; `openspec archive` (which
-   recreates that folder) is not used.
+- Do not write feature code without an active change containing tasks.
+- Read relevant main specs and all active change artifacts before applying.
+- Delta and main specs must contain comprehensive BDD-style success, failure,
+  and edge scenarios before apply or archive.
+- Sync merges verified delta specs into `openspec/specs/` and leaves the
+  change directory active for verification. Archive is a distinct gate:
+  once verified, remove the change directory directly instead of running
+  `openspec archive`.
+- Keep Markdown near 80 columns.
+- Write OpenSpec artifacts, ADRs, code comments, and commits in English.
+- Converse with users in the language they use.
+- Every generated `tasks.md` ends with: "Update BACKLOG.md with the ✓ shipped
+  status after archiving."
 
-## OpenSpec CLI
-
-If your agent has no OpenSpec slash commands, use the CLI:
+Use the OpenSpec CLI when no agent-specific command exists:
 
 ```bash
 openspec list [--json] [--specs]
@@ -55,61 +37,90 @@ openspec status --change "<name>" --json
 openspec instructions <artifact> --change "<name>"
 ```
 
-`openspec archive` is intentionally not part of this project's flow; do not run
-it.
+`openspec archive` is intentionally not part of this project's flow; it
+recreates `openspec/changes/archive/`, which this repository keeps empty
+except `.gitkeep`. Do not run it.
 
-## Rules
+## Project Boundary
 
-- Before implementing anything, read the relevant files in `openspec/specs/` and
-  the active change's artifacts.
-- Do not write feature code without an active change proposal that contains
-  tasks.
-- Keep changes minimal and scoped to the task being implemented.
-- Treat `openspec/specs/` as the truth. Reflect requirement changes there via
-  the sync step, not by editing code silently.
-- Keep project-specific contract, terms, and priorities in `PROJECT.md`.
+Lengkap is a `no_std + alloc`, sans-I/O all-of evidence completion core.
+`PROJECT.md` is the orientation contract and OpenSpec is behavioral truth.
 
-## Language
+Protect these separations:
 
-- Write OpenSpec artifacts, ADRs, code comments, and commit messages in English.
-- Converse with users in the language they use.
+- `lengkap-contract` owns fixed slots, monotonic capture, deterministic
+  completion, and structural input validation.
+- Users own evidence truth, slot meaning, persistence, clocks, async work, I/O,
+  scheduling, and reactions.
+- `lengkap` is a complete, logic-free `pub use lengkap_contract::*;` facade.
+- `lengkap-governance` is an unpublished independent judge.
 
-## Commits
+Do not add Worklane types or job-queue vocabulary to the core. Worklane is an
+originating pressure and intended bridge consumer, not an inward dependency.
+Do not add serialization, async, storage, clocks, callbacks, quorum, any-of, or
+dynamic slot growth without a concrete consumer and an OpenSpec change.
 
-Use Conventional Commits:
+## Executable Governance
 
-```text
-type(scope): summary
+The canonical Tianheng constitution is
+`crates/lengkap-governance/src/main.rs`. Its generated readable projection is
+`docs/architecture/tianheng-law.md`; never edit the generated boundary body by
+hand.
+
+Run:
+
+```bash
+cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
 ```
 
-Use lowercase imperative mood and keep the summary at 72 characters or fewer.
-Common types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `build`,
-`ci`.
+The gate observes direct dependencies, selected inline standard-library paths,
+public async functions, selected ambient clock reads, and serde marker
+acquisition. It does not prove every runtime effect or the semantic meaning of
+user evidence. Repair code toward a violated reason; never weaken a law,
+baseline new drift, or change severity merely to make a check green.
 
-### Commit Flow
+A deliberate law change requires explicit user authority, focused violating
+and clean reaction proofs, projection regeneration, and adversarial review.
 
-- **Propose**: `docs(<change>): propose <summary>`
-- **Apply**: `feat(<change>): <summary>` or `fix(<change>): <summary>`
-- **Sync**: `docs(specs): sync <change>`
-- **Archive**: `chore(openspec): archive <change>` (removes the change
-  directory; does not create an archive folder)
+## API And Release Discipline
 
-Never bundle unrelated changes into one commit.
+The decision and structural-error enums are intentionally exhaustive because
+their variants define the finite outcome space. Generic values and causes carry
+domain extensibility.
+
+Removing, renaming, or semantically repurposing any public item is breaking.
+Add convenience only alongside its first real consumer.
+
+The repository is pre-release. Do not run `cargo publish`, create a release
+tag, or create a GitHub release without a separately authorized release change.
+Keep `CHANGELOG.md` under `[Unreleased]` until then.
+
+## Commits And Integration
+
+- Branch from `main` and open every content change directly against `main`.
+- Use Conventional Commits with an English lowercase imperative subject no
+  longer than 72 characters.
+- Give every pull request a non-empty rationale, decisions, compatibility, and
+  verification body.
+- Rebase on current `main`, verify, and squash-merge.
+- The squash subject exactly matches the approved pull request title and its
+  non-empty body is distilled from the pull request body.
+- Do not append pull request numbers or URLs to squash subjects or bodies.
+- Do not include AI, agent, model, tool, automation, or generation attribution.
 
 ## Definition Of Done
 
-Run these from the workspace root before checking off a task, syncing specs, or
-archiving a change:
+Run from the workspace root:
 
 ```bash
-cargo build
-cargo test
-cargo clippy --all-targets -- -D warnings
+cargo build --workspace
+cargo test --workspace
+cargo clippy --workspace --all-targets -- -D warnings
 cargo fmt --all --check
+RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
+cargo deny check
+cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
 ```
 
-Before the first real crate exists, these Rust commands are not yet meaningful.
-The first project-specific OpenSpec change should add the real crate layout and
-make the Definition of Done runnable from the workspace root.
-
-If a command cannot run in the current environment, report that explicitly.
+Do not check a task off, sync, archive, or integrate while any required gate
+fails.

@@ -1,51 +1,125 @@
-# Project Contract
+# Project Contract — Lengkap
 
-Fill this file in during the first project-specific OpenSpec change. Keep it
-short and concrete; it is the orientation layer for humans and AI agents.
+## Status
+
+**Tier 2 — release candidate, unpublished.** The contract is clean, stable
+enough for a bridge trial, and protected by executable governance. It is not
+Tier 1 until a real consumer adopts it and the contract and facade are actually
+published through a separately authorized release.
+
+An ungraduated Lengkap is a legitimate permanent result. More abstraction is
+not a substitute for adoption evidence.
 
 ## Purpose
 
-Describe what this project is for in one or two paragraphs.
+Lengkap is a pure all-of evidence completion mechanism. A caller declares a
+fixed number of ordered required slots, supplies findings over time, and asks
+the core to adjudicate:
+
+- `Pending` while any slot is unresolved and none is known impossible;
+- `Ready` with values in slot order when every slot is captured; or
+- `Impossible` for the lowest unresolved impossible slot.
+
+The core owns completion mechanics and nothing else. Users own what a slot
+means, whether evidence is true, how pending state is stored, when to poll, and
+what effect follows a decision.
 
 ## Core Contract
 
-Name the behavior that must be protected first. Examples:
+- **Fixed all-of set.** Slot cardinality and order are established at
+  `Assembly` construction and never change during adjudication.
+- **Monotonic first-value capture.** Once a slot contains a value, later
+  findings cannot replace or revoke it.
+- **Order-independent decision.** Ready output is in slot order and the lowest
+  unresolved impossible slot wins, regardless of finding arrival order.
+- **Atomic structural validation.** Out-of-range and same-call duplicate
+  findings return the original assembly unchanged.
+- **Absence is pending.** A caller supplies no synthetic "still live" finding.
+- **Empty all-of identity.** An assembly with zero slots is ready with no
+  values; domains may reject empty groups at their own boundary.
+- **Minimal type obligations.** User values and causes need not implement
+  `Clone`, `Eq`, `Hash`, `Error`, or serialization traits.
+- **Sans-I/O boundary.** The contract is unconditional `no_std + alloc`, has no
+  dependencies, reads no ambient clock, exposes no public async API, performs
+  no standard-library I/O, and acquires no serde marker.
 
-- a data lifecycle that must never lose or duplicate information
-- a protocol compatibility promise
-- a user-facing workflow that must remain coherent
-- a security or privacy invariant
+## User Obligations
+
+Lengkap deliberately cannot decide:
+
+- which domain entities correspond to slots
+- how many slots a domain operation requires
+- whether an observation is authoritative or stale
+- whether contradictory evidence should be audited or rejected
+- how an `Assembly` is persisted between calls
+- how evidence is fetched, normalized, scheduled, or retried
+- what to do with `Pending`, `Ready`, `Impossible`, or a structural error
+
+The caller must uphold those obligations. The core's purity makes the boundary
+visible; it does not make domain truth automatic.
 
 ## Terminology
 
-Define project-specific terms here. Prefer one canonical term over synonyms.
+- **Slot**: a stable zero-based position in the required all-of set.
+- **Assembly**: fixed ordered storage for values captured so far.
+- **Finding**: caller-supplied evidence that a slot produced a value or became
+  impossible.
+- **Located finding**: one finding associated with one slot.
+- **Decision**: `Pending`, `Ready`, or `Impossible`.
+- **Structural error**: malformed adjudication input, distinct from a valid
+  domain-level impossible result.
 
-## First Project Change
+## Non-Goals
 
-Start each derived project with an OpenSpec change named
-`initial-project-shape` unless a more specific first change is clearer.
+Lengkap is not:
 
-That change should:
+- a queue, broker, workflow engine, scheduler, or callback system
+- an evidence discovery or verification system
+- a persistence, transport, wire-format, or serialization abstraction
+- a quorum, any-of, weighted, or dynamically growing completion engine
+- a conflict-resolution system for contradictory observations
+- an exactly-once or distributed-consensus claim
+- a Worklane-specific helper disguised with generic names
 
-- replace placeholder project metadata
-- define the first project-specific specs
-- choose the crate layout
-- add the real Rust crate or crates
-- make the Rust Definition of Done runnable from the workspace root
+## Graduation
 
-Before the first real crate exists, Rust build, test, lint, and format commands
-are not yet a meaningful Definition of Done. The first project-specific change
-is responsible for making them meaningful.
+The first intended bridge consumer is Worklane. Its fan-in adapter can map:
+
+- live work to no finding
+- completed-or-unknown work with stored result bytes to `Produced`
+- completed-or-unknown work without result bytes to
+  `Impossible(MissingResult)`
+- dead-lettered work to `Impossible(DeadLettered)`
+
+That mapping is evidence, not automatic adoption. Graduation requires both:
+
+1. Worklane or another real consumer adopts Lengkap without forcing domain
+   vocabulary or I/O into the contract; and
+2. `lengkap-contract` and `lengkap` are published through a separately
+   reviewed release.
+
+If the bridge reveals a structural mismatch, revise the contract from that
+evidence before publication. Do not grow the core in anticipation.
+
+## Architecture
+
+The workspace contains one product mechanism and two support surfaces:
+
+```text
+lengkap ───────> lengkap-contract
+
+lengkap-governance ───────> tianheng
+```
+
+`lengkap` is a complete glob re-export, not a second product. The governor is
+independent from the graph it judges. The generated Tianheng projection is in
+`docs/architecture/tianheng-law.md`.
 
 ## Change Prioritization
 
-When comparing possible changes, prefer the one that protects the core contract
-earliest:
+1. Completion correctness and preservation of user obligations.
+2. Fit learned from a real bridge consumer.
+3. Documentation and ergonomics around the existing contract.
+4. Graduation and release, only after their explicit conditions hold.
 
-1. Correctness, data integrity, lifecycle safety, and security foundations.
-2. Specified feature completeness for concepts already declared in OpenSpec.
-3. Operator and developer ergonomics.
-4. Scale-out, integrations, and optional platform features.
-
-Do not add scale-out or integration scope merely because a correctness change
-enables it. Keep enabling contract changes separate and small.
+Potential features without a current consumer belong in `BACKLOG.md`.
