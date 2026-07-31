@@ -16,7 +16,7 @@ NOT be included in a Cargo publication command.
 #### Scenario: The complete product release set is enumerated
 
 - **WHEN** release preparation identifies workspace packages for publication
-- **THEN** it includes `lengkap-contract` and `lengkap` at the release version
+- **THEN** it includes `lengkap-contract` and `lengkap` at version 0.1.1
 - **THEN** it excludes `lengkap-governance`
 
 #### Scenario: Governor publication is attempted
@@ -26,7 +26,7 @@ NOT be included in a Cargo publication command.
 
 #### Scenario: Product versions diverge
 
-- **WHEN** the contract and facade do not resolve to the same release version
+- **WHEN** the contract and facade do not resolve to version 0.1.1
 - **THEN** release finalization stops before a tag or GitHub release is created
 
 ### Requirement: Publication follows dependency order
@@ -37,12 +37,12 @@ verifies or publishes the dependent `lengkap` facade from crates.io.
 #### Scenario: Contract publication succeeds
 
 - **WHEN** `lengkap-contract` is packaged from the exact release commit and
-  version 0.1.0 becomes visible in crates.io
+  version 0.1.1 becomes visible in crates.io
 - **THEN** facade publication verification may begin
 
 #### Scenario: Contract publication fails
 
-- **WHEN** the contract upload fails and version 0.1.0 is not present in
+- **WHEN** the contract upload fails and version 0.1.1 is not present in
   crates.io
 - **THEN** the facade is not published
 - **THEN** no release tag or GitHub release is created
@@ -51,7 +51,7 @@ verifies or publishes the dependent `lengkap` facade from crates.io.
 
 - **WHEN** the contract upload reports success but the registry dependency is
   not yet resolvable
-- **THEN** release finalization waits and rechecks the exact published version
+- **THEN** release finalization waits and rechecks exact version 0.1.1
 - **THEN** it does not publish the facade with a path or source override
 
 #### Scenario: Publication status is ambiguous
@@ -62,10 +62,12 @@ verifies or publishes the dependent `lengkap` facade from crates.io.
 
 ### Requirement: Release artifacts are verified at their public boundary
 
-Before publication, the complete workspace SHALL pass its required gates and
-each product package SHALL contain its required metadata, source, README, and
+Before publication, the complete workspace SHALL pass its required gates,
+including both product semver comparisons with crates.io 0.1.0, and each
+product package SHALL contain its required metadata, source, README, and
 dual-license files. After publication, a fresh external Rust 1.85 consumer
-SHALL resolve `lengkap` from crates.io and use the facade API successfully.
+SHALL resolve exact `lengkap` 0.1.1 from crates.io and use the facade API
+successfully.
 
 #### Scenario: Workspace or package verification fails
 
@@ -75,16 +77,16 @@ SHALL resolve `lengkap` from crates.io and use the facade API successfully.
 
 #### Scenario: Both packages satisfy release verification
 
-- **WHEN** the exact release commit passes every repository gate and package
-  inspection
+- **WHEN** the exact release commit passes every repository and semver gate
+- **AND** both product package inspections pass
 - **THEN** the ordered publication transaction may begin
 
 #### Scenario: External consumer succeeds
 
-- **WHEN** a new Rust 1.85 project depends on `lengkap = "0.1.0"` from
+- **WHEN** a new Rust 1.85 project depends on `lengkap = "=0.1.1"` from
   crates.io and exercises adjudication through the facade
 - **THEN** dependency resolution, compilation, and execution succeed without a
-  path override
+  path, patch, or source override
 
 #### Scenario: External consumer fails
 
@@ -95,21 +97,21 @@ SHALL resolve `lengkap` from crates.io and use the facade API successfully.
 ### Requirement: Finalization names only a complete registry release
 
 The exact release preparation commit on `main` SHALL receive annotated tag
-`v0.1.0` with message `release: 0.1.0` only after both product crates and the
+`v0.1.1` with message `release: 0.1.1` only after both product crates and the
 external consumer verification succeed. The matching GitHub release SHALL be
 created from that tag without another content commit.
 
 #### Scenario: Complete registry release is finalized
 
-- **WHEN** both product crates are visible at version 0.1.0 and the external
+- **WHEN** both product crates are visible at version 0.1.1 and the external
   consumer passes
-- **THEN** the release commit is tagged with annotated tag `v0.1.0`
+- **THEN** the release commit is tagged with annotated tag `v0.1.1`
 - **THEN** the matching GitHub release is created from that tag
 
 #### Scenario: Only one product crate is available
 
-- **WHEN** either product crate is absent at version 0.1.0
-- **THEN** no `v0.1.0` tag or GitHub release is created
+- **WHEN** either product crate is absent at version 0.1.1
+- **THEN** no `v0.1.1` tag or GitHub release is created
 
 #### Scenario: A finalization target differs from the release commit
 

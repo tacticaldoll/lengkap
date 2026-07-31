@@ -1,6 +1,7 @@
 # Lengkap
 
-**Tier 1 — consumer-proven.** Version 0.1.0 defines the initial public release.
+**Tier 1 — consumer-proven.** Version 0.1.1 defines the current compatible
+maintenance release, and version 0.1.0 established the initial public release.
 Worklane consumes the crates.io facade while retaining broker access,
 checkpoint persistence, polling, and reactions in its own adapter.
 

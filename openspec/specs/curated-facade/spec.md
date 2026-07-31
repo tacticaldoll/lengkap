@@ -48,10 +48,11 @@ remain in the contract crate.
 ### Requirement: Release state is explicit
 
 The contract and facade manifests SHALL contain complete package metadata.
-Repository and package documentation SHALL identify version 0.1.0 as the
-initial public release. Project maturity SHALL be Tier 1 only after a real
-consumer adopts the registry facade without moving domain vocabulary,
-evidence truth, persistence, scheduling, I/O, or reactions into Lengkap.
+Repository and package documentation SHALL identify version 0.1.1 as the
+current compatible Tier 1 maintenance release and version 0.1.0 as the initial
+public release. Project maturity SHALL be Tier 1 only after a real consumer
+adopts the registry facade without moving domain vocabulary, evidence truth,
+persistence, scheduling, I/O, or reactions into Lengkap.
 
 #### Scenario: Package metadata is validated before release
 
@@ -61,13 +62,13 @@ evidence truth, persistence, scheduling, I/O, or reactions into Lengkap.
 
 #### Scenario: Facade resolves the published contract
 
-- **WHEN** a registry consumer depends on `lengkap` version 0.1.0
-- **THEN** Cargo resolves `lengkap-contract` version 0.1.0 from the registry
+- **WHEN** a registry consumer depends on `lengkap` version 0.1.1
+- **THEN** Cargo resolves `lengkap-contract` version 0.1.1 from the registry
 - **THEN** the complete contract API remains available through the facade root
 
 #### Scenario: Registry adoption graduates project maturity
 
-- **WHEN** Worklane or another real consumer resolves the published facade from
+- **WHEN** Worklane or another real consumer resolves a published facade from
   crates.io without a path or source override
 - **AND** that consumer keeps domain vocabulary, evidence truth, persistence,
   scheduling, I/O, and reactions outside Lengkap
@@ -87,6 +88,5 @@ evidence truth, persistence, scheduling, I/O, or reactions into Lengkap.
 #### Scenario: Authorized release finalization completes
 
 - **WHEN** both product crates are published and the release is tagged
-- **THEN** the changelog and package documentation identify the released
-  version
-- **THEN** project maturity reflects the strongest completed consumer evidence
+- **THEN** the changelog and package documentation identify version 0.1.1
+- **THEN** project maturity remains Tier 1 from completed consumer evidence

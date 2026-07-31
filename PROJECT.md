@@ -2,10 +2,11 @@
 
 ## Status
 
-**Tier 1 — consumer-proven.** Version 0.1.0 defines the initial public release.
-Worklane consumes that registry artifact while keeping broker access,
-checkpoint persistence, polling, and reactions in its own adapter. Adoption
-required no Worklane vocabulary, I/O, or policy in Lengkap.
+**Tier 1 — consumer-proven.** Version 0.1.1 defines the current compatible
+maintenance release, and version 0.1.0 established the initial public release.
+Worklane consumes the registry facade while keeping broker access, checkpoint
+persistence, polling, and reactions in its own adapter. Adoption required no
+Worklane vocabulary, I/O, or policy in Lengkap.
 
 This status records completed evidence, not an invitation to widen the core.
 More abstraction remains no substitute for concrete product pressure.

@@ -22,9 +22,10 @@ truth, encoding, storage, I/O, scheduling, and reactions.
 Most applications should depend on the `lengkap` facade. Depend directly on
 this crate only when the contract boundary itself is the desired dependency.
 
-Version 0.1.0 defines the initial public release. Lengkap is Tier 1 after
-Worklane adopted the registry facade without moving its I/O or domain policy
-into the contract. See the root `README.md` and `PROJECT.md` in the
+Version 0.1.1 defines the current compatible maintenance release, and version
+0.1.0 established the initial public release. Lengkap is Tier 1 after Worklane
+adopted the registry facade without moving its I/O or domain policy into the
+contract. See the root `README.md` and `PROJECT.md` in the
 [Lengkap repository](https://github.com/tacticaldoll/lengkap) for the full
 contract and maturity status.
 

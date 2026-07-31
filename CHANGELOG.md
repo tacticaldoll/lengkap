@@ -12,6 +12,23 @@ A release preparation pull request adds a heading in this form:
 tag:
 `[X.Y.Z]: https://github.com/tacticaldoll/lengkap/releases/tag/vX.Y.Z`.
 
+## [0.1.1] - 2026-07-31
+
+### Added
+
+- Semver compatibility reactions for both product crates against their exact
+  crates.io 0.1.0 baselines.
+- A domain-neutral checkpoint-and-restore example and focused complete, empty,
+  and incomplete ready-extraction tests.
+
+### Changed
+
+- Tier 1 consumer-proven status after Worklane adopted the registry facade
+  without moving broker access, persistence, polling, or reactions into
+  Lengkap.
+- Total ownership-based ready-value extraction with no internal production
+  panic assertion.
+
 ## [0.1.0] - 2026-07-31
 
 ### Added
@@ -26,4 +43,5 @@ tag:
 - Executable Tianheng architecture governance, split Rust 1.85 product and Rust
   1.88 repository gates, and bounded exhaustive contract tests.
 
+[0.1.1]: https://github.com/tacticaldoll/lengkap/releases/tag/v0.1.1
 [0.1.0]: https://github.com/tacticaldoll/lengkap/releases/tag/v0.1.0
