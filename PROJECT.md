@@ -18,7 +18,8 @@ the core to adjudicate:
 
 - `Pending` while any slot is unresolved and none is known impossible;
 - `Ready` with values in slot order when every slot is captured; or
-- `Impossible` for the lowest unresolved impossible slot.
+- `Impossible` for the lowest unresolved impossible slot, with the accumulated
+  assembly returned for recovery.
 
 The core owns completion mechanics and nothing else. Users own what a slot
 means, whether evidence is true, how pending state is stored, when to poll, and
@@ -33,7 +34,12 @@ what effect follows a decision.
 - **Order-independent decision.** Ready output is in slot order and the lowest
   unresolved impossible slot wins, regardless of finding arrival order.
 - **Atomic structural validation.** Out-of-range and same-call duplicate
-  findings return the original assembly unchanged.
+  findings return the original assembly unchanged with the complete rejected
+  finding batch.
+- **Caller-owned checkpoint seam.** Ordered optional slots can leave and
+  restore an assembly without prescribing serialization or persistence.
+- **Inspectable progress.** Captured and remaining counts plus stable
+  unresolved-slot iteration expose progress without consuming state.
 - **Absence is pending.** A caller supplies no synthetic "still live" finding.
 - **Empty all-of identity.** An assembly with zero slots is ready with no
   values; domains may reject empty groups at their own boundary.
@@ -51,7 +57,7 @@ Lengkap deliberately cannot decide:
 - how many slots a domain operation requires
 - whether an observation is authoritative or stale
 - whether contradictory evidence should be audited or rejected
-- how an `Assembly` is persisted between calls
+- how exported assembly slots are encoded and persisted between calls
 - how evidence is fetched, normalized, scheduled, or retried
 - what to do with `Pending`, `Ready`, `Impossible`, or a structural error
 

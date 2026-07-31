@@ -24,6 +24,61 @@ SHALL NOT change during adjudication.
 - **WHEN** findings are adjudicated against an assembly
 - **THEN** the returned pending assembly has the same number and order of slots
 
+### Requirement: Assembly state crosses a caller-owned checkpoint boundary
+
+The core SHALL let a caller consume an assembly into ordered optional slots and
+restore an assembly from ordered optional slots. The round trip SHALL preserve
+slot count, slot order, resolved positions, and owned values without requiring
+serialization or cloning.
+
+#### Scenario: A partial assembly round-trips
+
+- **WHEN** a caller exports and restores an assembly with some captured values
+- **THEN** every captured value and unresolved slot remains at the same position
+
+#### Scenario: An empty assembly round-trips
+
+- **WHEN** a caller exports and restores a zero-slot assembly
+- **THEN** the restored assembly is complete and still has zero slots
+
+#### Scenario: A complete assembly round-trips
+
+- **WHEN** a caller exports and restores an assembly whose slots are all
+  captured
+- **THEN** the restored assembly remains complete with the same ordered values
+
+#### Scenario: The caller owns persistence policy
+
+- **WHEN** a caller moves exported slots through its own storage or encoding
+  adapter
+- **THEN** the core performs no serialization, I/O, versioning, or persistence
+
+### Requirement: Assembly progress is inspectable
+
+An assembly SHALL report captured and remaining counts and SHALL enumerate
+unresolved slots in stable ascending order without consuming the assembly.
+Captured plus remaining counts SHALL equal the fixed slot count.
+
+#### Scenario: Partial progress is counted
+
+- **WHEN** two of five slots have captured values
+- **THEN** captured count is two and remaining count is three
+
+#### Scenario: Unresolved slots retain stable order
+
+- **WHEN** only slots one and three of a four-slot assembly are captured
+- **THEN** unresolved-slot enumeration yields slots zero and two in that order
+
+#### Scenario: Empty progress is complete
+
+- **WHEN** progress is inspected for a zero-slot assembly
+- **THEN** both counts are zero and unresolved-slot enumeration is empty
+
+#### Scenario: Inspection does not consume state
+
+- **WHEN** a caller inspects counts and unresolved slots before adjudication
+- **THEN** the same assembly remains available with all captured values intact
+
 ### Requirement: Produced values are captured monotonically
 
 A produced finding for an unresolved slot SHALL capture its value. Once a slot
@@ -89,14 +144,29 @@ mean only that the slot remains unresolved.
 ### Requirement: Impossibility is deterministic
 
 An impossible finding for an unresolved slot SHALL make the decision
-`Impossible`. If multiple unresolved slots are impossible in one valid input,
-the decision SHALL report the lowest slot and its cause, independently of
-finding order.
+`Impossible`. The decision SHALL return the accumulated assembly together with
+the selected slot and cause. Produced findings in the same valid call SHALL be
+captured in that returned assembly. If multiple unresolved slots are impossible
+in one valid input, the decision SHALL report the lowest slot and its cause,
+independently of finding order.
 
 #### Scenario: An unresolved slot becomes impossible
 
 - **WHEN** an unresolved slot receives an impossible finding
-- **THEN** adjudication returns `Impossible` naming that slot and cause
+- **THEN** adjudication returns `Impossible` naming that slot and cause and
+  returning the assembly
+
+#### Scenario: Same-call progress remains recoverable
+
+- **WHEN** one unresolved slot produces a value and another unresolved slot is
+  impossible in the same valid call
+- **THEN** the impossible decision's assembly contains the produced value
+
+#### Scenario: Prior progress remains recoverable
+
+- **WHEN** an assembly with earlier captured values receives an impossible
+  finding for an unresolved slot
+- **THEN** the impossible decision's assembly retains every earlier value
 
 #### Scenario: Lowest impossible slot wins
 
@@ -113,25 +183,55 @@ finding order.
 
 Adjudication SHALL reject an out-of-range slot or duplicate findings for the
 same slot in one call as a structured error. It SHALL validate all findings
-before capture and SHALL return the original assembly unchanged on error.
+before capture and SHALL return both the original assembly unchanged and the
+complete original finding batch on error.
 
 #### Scenario: An out-of-range slot is rejected
 
 - **WHEN** a finding addresses a slot outside the assembly
 - **THEN** adjudication returns an out-of-range structural error with the
-  original assembly
+  original assembly and complete finding batch
 
 #### Scenario: Same-call duplicate findings are rejected
 
 - **WHEN** one adjudication input contains two findings for the same slot
 - **THEN** adjudication returns a duplicate-finding structural error with the
-  original assembly
+  original assembly and both findings
 
 #### Scenario: An error after valid-looking input captures nothing
 
 - **WHEN** an input contains a valid produced finding followed by any structural
   error
 - **THEN** the returned original assembly has not captured the produced value
+  and the returned batch still owns every supplied finding
+
+#### Scenario: Recovery requires no policy traits
+
+- **WHEN** values and causes implement neither `Clone` nor serialization traits
+- **THEN** a caller can still recover the unchanged assembly and complete batch
+
+### Requirement: Adjudication entrypoints are equivalent
+
+The core SHALL provide free-function, assembly method, and single-finding
+method entrypoints. Equivalent input SHALL produce the same decision or
+structural error, and all entrypoints SHALL retain ownership-first semantics.
+
+#### Scenario: Batch method matches the free function
+
+- **WHEN** identical assemblies and batches are passed to the free function and
+  batch method
+- **THEN** both entrypoints return equivalent outcomes
+
+#### Scenario: Single-finding method captures progress
+
+- **WHEN** an unresolved slot receives one produced finding through the
+  single-finding method
+- **THEN** its value is captured under the same rules as batch adjudication
+
+#### Scenario: Single-finding method reports invalid input
+
+- **WHEN** one out-of-range finding is passed to the single-finding method
+- **THEN** it returns the unchanged assembly and that complete one-item batch
 
 ### Requirement: The contract is sans-I/O and domain-neutral
 

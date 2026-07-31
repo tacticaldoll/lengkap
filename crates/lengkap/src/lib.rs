@@ -4,13 +4,10 @@
 //! re-exports the complete [`lengkap_contract`] API.
 //!
 //! ```
-//! use lengkap::{
-//!     Assembly, Decision, Finding, LocatedFinding, Slot, adjudicate,
-//! };
+//! use lengkap::{Assembly, Decision, Finding, LocatedFinding, Slot};
 //!
-//! let decision = adjudicate(
-//!     Assembly::new(2),
-//!     [
+//! let decision = Assembly::new(2)
+//!     .adjudicate([
 //!         LocatedFinding::<_, &str>::new(
 //!             Slot::new(1),
 //!             Finding::Produced("second"),
@@ -19,9 +16,8 @@
 //!             Slot::new(0),
 //!             Finding::Produced("first"),
 //!         ),
-//!     ],
-//! )
-//! .expect("both slots are valid");
+//!     ])
+//!     .expect("both slots are valid");
 //!
 //! assert_eq!(decision, Decision::Ready(vec!["first", "second"]));
 //! ```
