@@ -5,7 +5,9 @@ first.
 
 ## Source Of Truth And Workflow
 
-This project uses OpenSpec. Current behavior lives in `openspec/specs/`; active
+This project uses OpenSpec as a durable, tool-neutral source of truth: chat
+history and agent-specific command files are not reliable enough to define
+the system contract. Current behavior lives in `openspec/specs/`; active
 delta proposals live in `openspec/changes/`.
 
 Follow:
@@ -23,7 +25,8 @@ explore -> propose -> apply -> sync -> archive
   once verified, remove the change directory directly instead of running
   `openspec archive`.
 - Keep Markdown near 80 columns.
-- Write OpenSpec artifacts, ADRs, code comments, and commits in English.
+- Write OpenSpec artifacts, `BACKLOG.md` entries, code comments, and commits
+  in English.
 - Converse with users in the language they use.
 - Every generated `tasks.md` ends with: "Update BACKLOG.md with the ✓ shipped
   status after archiving."
