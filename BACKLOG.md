@@ -98,3 +98,9 @@ mechanism can stand as an independent, user-obligation-driven component.
   workspace metadata, the strict release ledger, both 0.1.0 semver baselines,
   contract dry-run, staged facade boundary, and complete-result publication
   transaction are ready; the governor remains repository-only.
+- ✓ **Dogfooding example documentation (archived 2026-08-01).** Three
+  dependency-free examples demonstrate that an `Impossible` slot is
+  recoverable, that the contract's naming stays ergonomic outside queue
+  vocabulary, and that a caller can recover and resubmit after a structural
+  error; all three are referenced from README.md with no dependency, API, or
+  governance-boundary change.
