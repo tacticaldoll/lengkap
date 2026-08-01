@@ -59,6 +59,14 @@ mechanism can stand as an independent, user-obligation-driven component.
 - **Release-ledger changelog.** Pending work stays in OpenSpec, pull requests,
   and this backlog; `CHANGELOG.md` gains entries only during tagged release
   preparation.
+- **ADR practice retired.** The three prior `docs/adr/` records were nearly
+  fully duplicated by this file's Origin, Deferred Work, and Shipped
+  sections and by `PROJECT.md`'s Architecture and Graduation Evidence
+  sections; the isolation decision's crate boundaries are independently
+  enforced by `lengkap-governance` rather than needing a prose copy. A
+  fourth, unmaintained copy risked silent drift more than it preserved
+  context. Decision rationale and history now live directly in this file
+  and `PROJECT.md`; the OpenSpec-adoption rationale moved into `AGENTS.md`.
 
 ## Deferred Work
 
