@@ -12,6 +12,16 @@ A release preparation pull request adds a heading in this form:
 tag:
 `[X.Y.Z]: https://github.com/tacticaldoll/lengkap/releases/tag/vX.Y.Z`.
 
+## [0.1.2] - 2026-08-01
+
+### Added
+
+- Three dogfooding examples: `impossible_then_recovered`, `readiness_gate`,
+  and `resubmit_after_structural_error`, demonstrating that an `Impossible`
+  slot remains recoverable, that the contract's naming stays ergonomic
+  outside queue vocabulary, and that a caller can recover and resubmit
+  after a structural error.
+
 ## [0.1.1] - 2026-07-31
 
 ### Added
@@ -43,5 +53,6 @@ tag:
 - Executable Tianheng architecture governance, split Rust 1.85 product and Rust
   1.88 repository gates, and bounded exhaustive contract tests.
 
+[0.1.2]: https://github.com/tacticaldoll/lengkap/releases/tag/v0.1.2
 [0.1.1]: https://github.com/tacticaldoll/lengkap/releases/tag/v0.1.1
 [0.1.0]: https://github.com/tacticaldoll/lengkap/releases/tag/v0.1.0
