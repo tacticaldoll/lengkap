@@ -61,13 +61,16 @@ that this naming remains ergonomic outside the Worklane-shaped domain.
 ### Requirement: An example demonstrates structural-error recovery
 
 An example SHALL demonstrate recovering from an `AdjudicationError` caused by
-a caller-side mapping mistake, using `kind()` to identify the error and
-`into_findings()` to recover the batch, then resubmitting a corrected batch
-to reach a valid decision.
+a caller-side mapping mistake against an assembly that already holds prior
+captured progress, using `kind()` to identify the error and `into_parts()`
+to recover both the unchanged assembly and the finding batch, then
+resubmitting a corrected batch to reach a valid decision.
 
 #### Scenario: A caller corrects and resubmits after a structural error
 
-- **WHEN** a batch containing an out-of-range finding is adjudicated and
-  returns a `SlotOutOfRange` `AdjudicationError`
-- **THEN** the caller recovers the batch via `into_findings()`, removes the
-  invalid finding, and a corrected resubmission returns `Pending` or `Ready`
+- **WHEN** a batch containing an out-of-range finding is adjudicated against
+  an assembly with prior captured progress and returns a `SlotOutOfRange`
+  `AdjudicationError`
+- **THEN** the caller recovers the assembly and batch via `into_parts()`,
+  removes the invalid finding, and a corrected resubmission returns
+  `Pending` or `Ready` with the prior progress intact

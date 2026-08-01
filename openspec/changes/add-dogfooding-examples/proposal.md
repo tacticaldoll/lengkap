@@ -25,9 +25,10 @@ dependencies, or its public API.
   demonstrably domain-neutral.
 - Add `crates/lengkap-contract/examples/resubmit_after_structural_error.rs`:
   demonstrates recovering from an `AdjudicationError` (an out-of-range finding
-  caused by a caller-side mapping bug), inspecting `kind()`, extracting the
-  batch with `into_findings()`, dropping the bad entry, and resubmitting a
-  corrected batch.
+  caused by a caller-side mapping bug, hitting an assembly that already has
+  prior captured progress), inspecting `kind()`, recovering both the
+  unchanged assembly and the finding batch with `into_parts()`, dropping the
+  bad entry, and resubmitting a corrected batch that reaches `Ready`.
 - Reference all three new examples from `README.md`, alongside the two
   existing ones, in the same style.
 - No changes to `Cargo.toml`, crate dependencies, `lengkap-contract`/`lengkap`
