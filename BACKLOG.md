@@ -67,6 +67,20 @@ mechanism can stand as an independent, user-obligation-driven component.
   fourth, unmaintained copy risked silent drift more than it preserved
   context. Decision rationale and history now live directly in this file
   and `PROJECT.md`; the OpenSpec-adoption rationale moved into `AGENTS.md`.
+- **Release documentation no longer restates the current version number.**
+  `docs/releasing.md` and the `release-distribution` spec duplicated the
+  release process across three places (that doc, a spec with a version
+  number hardcoded into a dozen scenarios, and `AGENTS.md` prose), and every
+  release required editing all three plus `PROJECT.md`/`README.md` just to
+  swap one number. `AGENTS.md`'s Release Finalization section is now the
+  single procedural home; `PROJECT.md`/`README.md` point to `CHANGELOG.md`
+  for the current version instead of restating it. The Tier 1 graduation
+  condition itself (a real consumer adopts the registry facade without
+  forcing domain vocabulary or I/O into Lengkap) remains in `PROJECT.md`'s
+  Graduation Evidence section, unchanged. This mirrors the leaner
+  release-documentation convention this project's own later work converged
+  on elsewhere; a release should only ever touch `Cargo.toml`, `Cargo.lock`,
+  and `CHANGELOG.md`.
 
 ## Deferred Work
 
