@@ -1,9 +1,9 @@
 # Lengkap
 
-**Tier 1 — consumer-proven.** Version 0.1.1 defines the current compatible
-maintenance release, and version 0.1.0 established the initial public release.
-Worklane consumes the crates.io facade while retaining broker access,
-checkpoint persistence, polling, and reactions in its own adapter.
+**Tier 1 — consumer-proven** since the 0.1.0 initial public release; see
+[`CHANGELOG.md`](CHANGELOG.md) for the current released version. Worklane
+consumes the crates.io facade while retaining broker access, checkpoint
+persistence, polling, and reactions in its own adapter.
 
 Lengkap ("complete; whole, with nothing missing" — Indonesian) is a
 zero-dependency, `no_std + alloc`, sans-I/O core for all-of evidence completion.
@@ -99,9 +99,8 @@ The publishable `lengkap-contract` and `lengkap` crates support Rust 1.85.
 Repository-only governance tooling uses Rust 1.88 and is checked separately.
 Public API compatibility is compared with each crate's exact crates.io 0.1.0
 baseline. The product crates are released together, contract first and facade
-second;
-`lengkap-governance` is never published. See
-[`docs/releasing.md`](docs/releasing.md) for the transaction boundary.
+second; `lengkap-governance` is never published. See `AGENTS.md`'s Release
+Finalization section for the transaction boundary.
 
 ## License
 

@@ -99,15 +99,32 @@ product authority.
 Do not run `cargo publish`, create a release tag, or create a GitHub release
 without a separately authorized release change. `CHANGELOG.md` is a strict
 release ledger and therefore has no `[Unreleased]` section. Normal work is
-recorded in OpenSpec, pull requests, and `BACKLOG.md`. A release preparation
-pull request adds `## [X.Y.Z] - YYYY-MM-DD` and the footer link
-`[X.Y.Z]: https://github.com/tacticaldoll/lengkap/releases/tag/vX.Y.Z`.
+recorded in OpenSpec, pull requests, and `BACKLOG.md`.
 
-The public release set is `lengkap-contract` followed by the dependent
-`lengkap` facade at the same version. Verify the complete workspace, publish
-and verify the contract, then verify and publish the facade.
-`lengkap-governance` remains unpublished. Tag only after both registry
-artifacts and a fresh external consumer have been verified.
+### Release Finalization
+
+- Prepare release content in a pull request whose squash subject is exactly
+  `chore(release): prepare X.Y.Z`. Add `## [X.Y.Z] - YYYY-MM-DD` to
+  `CHANGELOG.md` with the footer link
+  `[X.Y.Z]: https://github.com/tacticaldoll/lengkap/releases/tag/vX.Y.Z`.
+- The public release set is `lengkap-contract` followed by the dependent
+  `lengkap` facade at the same version; `lengkap-governance` stays
+  unpublished and is never included in a publish command.
+- Before merging, run the complete Definition of Done, inspect both product
+  package archives, and run a publication dry-run for the contract.
+- After the squash commit reaches `main`, re-run the complete gates and
+  confirm the working tree is clean and exactly at that commit.
+- Publish `lengkap-contract` first. Only after it is visible in the
+  crates.io index, dry-run and then publish `lengkap`. If an upload times
+  out or its result is uncertain, query crates.io for the exact crate and
+  version before retrying — published versions cannot be overwritten.
+- Before finalizing, verify a fresh external project with no path, patch, or
+  source override, depending on the exact released `lengkap` version on the
+  declared Rust 1.85 floor.
+- Only after both crates and the external consumer verification succeed,
+  tag the exact release preparation commit with annotated tag `vX.Y.Z` and
+  message `release: X.Y.Z`, and create the matching GitHub release from
+  that tag. No content commit follows merely to finalize the release.
 
 ## Commits And Integration
 
