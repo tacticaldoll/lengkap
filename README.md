@@ -65,6 +65,20 @@ The domain-neutral
 example shows owned partial-state transfer without prescribing encoding,
 storage, or I/O.
 
+The
+[`impossible_then_recovered`](crates/lengkap-contract/examples/impossible_then_recovered.rs)
+example shows that an `Impossible` slot is not sealed by the core: a caller
+may resubmit a produced finding for the same slot and still reach `Ready`.
+The
+[`readiness_gate`](crates/lengkap-contract/examples/readiness_gate.rs)
+example re-derives the same fixed all-of shape from an application-startup
+domain instead of a queue, showing that `Assembly`, `Slot`, and `Finding`
+need no adaptation to fit either vocabulary. The
+[`resubmit_after_structural_error`](crates/lengkap-contract/examples/resubmit_after_structural_error.rs)
+example shows recovering both a partially captured assembly and its finding
+batch after a caller mapping bug, then completing adjudication with a
+corrected resubmission.
+
 ## Definition Of Done
 
 ```bash
