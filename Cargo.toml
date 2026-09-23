@@ -16,5 +16,5 @@ keywords = ["all-of", "evidence", "sans-io", "state-machine", "no-std"]
 categories = ["rust-patterns", "no-std"]
 
 [workspace.dependencies]
-tianheng = "0.3.0"
+tianheng = "0.6.1"
 lengkap-contract = { path = "crates/lengkap-contract", version = "0.1.2" }
