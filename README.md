@@ -5,6 +5,8 @@
 consumes the crates.io facade while retaining broker access, checkpoint
 persistence, polling, and reactions in its own adapter.
 
+## Scope
+
 Lengkap ("complete; whole, with nothing missing" — Indonesian) is a
 zero-dependency, `no_std + alloc`, sans-I/O core for all-of evidence completion.
 A fixed ordered assembly becomes ready only after every slot has produced a
@@ -44,7 +46,7 @@ in-memory checkpoint seam; callers still own encoding, storage, and I/O.
 Recovered located findings can be consumed back into their slot and owned
 finding, while structural errors provide domain-neutral error messages.
 
-## Workspace
+## Architecture
 
 - `crates/lengkap-contract` — the complete zero-dependency mechanism.
 - `crates/lengkap` — the recommended, logic-free re-export facade.
@@ -79,28 +81,17 @@ example shows recovering both a partially captured assembly and its finding
 batch after a caller mapping bug, then completing adjudication with a
 corrected resubmission.
 
-## Definition Of Done
+## Contributing
 
-```bash
-cargo build --workspace
-cargo test --workspace
-cargo clippy --workspace --all-targets -- -D warnings
-cargo fmt --all --check
-RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
-cargo +1.85.0 check -p lengkap-contract -p lengkap --all-targets
-cargo +1.88.0 check --workspace --all-targets
-cargo semver-checks --package lengkap-contract --baseline-version 0.1.0
-cargo semver-checks --package lengkap --baseline-version 0.1.0
-cargo deny check
-cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
-```
+`AGENTS.md` is the contributor and agent guide, including the Definition of Done;
+`docs/development-flow.md` is the short checklist.
 
 The publishable `lengkap-contract` and `lengkap` crates support Rust 1.85.
 Repository-only governance tooling uses Rust 1.88 and is checked separately.
 Public API compatibility is compared with each crate's exact crates.io 0.1.0
 baseline. The product crates are released together, contract first and facade
 second; `lengkap-governance` is never published. See `AGENTS.md`'s Release
-Finalization section for the transaction boundary.
+Finalization and Release Verification sections for the transaction boundary.
 
 ## License
 

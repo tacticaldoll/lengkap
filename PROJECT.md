@@ -11,7 +11,7 @@ I/O, or policy in Lengkap.
 This status records completed evidence, not an invitation to widen the core.
 More abstraction remains no substitute for concrete product pressure.
 
-## Purpose
+## Vision
 
 Lengkap is a pure all-of evidence completion mechanism. A caller declares a
 fixed number of ordered required slots, supplies findings over time, and asks
@@ -21,6 +21,8 @@ the core to adjudicate:
 - `Ready` with values in slot order when every slot is captured; or
 - `Impossible` for the lowest unresolved impossible slot, with the accumulated
   assembly returned for recovery.
+
+## Product Positioning
 
 The core owns completion mechanics and nothing else. Users own what a slot
 means, whether evidence is true, how pending state is stored, when to poll, and
@@ -67,17 +69,6 @@ Lengkap deliberately cannot decide:
 
 The caller must uphold those obligations. The core's purity makes the boundary
 visible; it does not make domain truth automatic.
-
-## Terminology
-
-- **Slot**: a stable zero-based position in the required all-of set.
-- **Assembly**: fixed ordered storage for values captured so far.
-- **Finding**: caller-supplied evidence that a slot produced a value or became
-  impossible.
-- **Located finding**: one finding associated with one slot.
-- **Decision**: `Pending`, `Ready`, or `Impossible`.
-- **Structural error**: malformed adjudication input, distinct from a valid
-  domain-level impossible result.
 
 ## Non-Goals
 
@@ -140,3 +131,11 @@ independent from the graph it judges. The generated Tianheng projection is in
 5. Graduation and release, only after their explicit conditions hold.
 
 Potential features without a current consumer belong in `BACKLOG.md`.
+
+## References
+
+- `docs/domain-language.md` — the canonical vocabulary.
+- `docs/worklane-bridge.md` — the Worklane bridge mapping and adoption result.
+- `BACKLOG.md` — settled and deferred decisions.
+- `CHANGELOG.md` — the release ledger.
+- `docs/architecture/tianheng-law.md` — the generated projection of the accepted constitution.

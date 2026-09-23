@@ -14,7 +14,6 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/tacticaldoll/lengkap"
 keywords = ["all-of", "evidence", "sans-io", "state-machine", "no-std"]
 categories = ["rust-patterns", "no-std"]
-publish = false
 
 [workspace.dependencies]
 tianheng = "0.3.0"
