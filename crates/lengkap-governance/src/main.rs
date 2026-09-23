@@ -8,23 +8,31 @@ use tianheng::prelude::*;
 
 const CONTRACT_DEPENDENCY_REASON: &str = concat!(
     "lengkap-contract is the portable no_std mechanism root: its model and ",
-    "adjudication need no dependency, so it must declare none."
+    "adjudication need no dependency, so it declares no normal dependency."
 );
 const FACADE_DEPENDENCY_REASON: &str = concat!(
     "lengkap is the curated public entrypoint: its surface is the complete ",
-    "lengkap-contract re-export, so it may depend only on lengkap-contract."
+    "lengkap-contract re-export, so its normal dependencies are limited to ",
+    "lengkap-contract."
 );
 const GOVERNOR_DEPENDENCY_REASON: &str = concat!(
     "the governance gate stays independent of the workspace it judges: ",
-    "lengkap-governance may depend only on tianheng."
+    "lengkap-governance's normal dependencies are limited to tianheng."
 );
 const NO_IO_REASON: &str = concat!(
-    "evidence adjudication is an in-memory mechanism: lengkap-contract must ",
-    "not call std::io, std::fs, std::net, or std::process."
+    "evidence adjudication is an in-memory mechanism: lengkap-contract makes ",
+    "no inline call into a std::io, std::fs, std::net, or std::process path. ",
+    "Coverage is partial by nature (a call through a method on a value, such ",
+    "as `write_all` on a writer, or macro-expanded I/O is invisible to a ",
+    "source scan)."
 );
 const SANS_IO_REASON: &str = concat!(
     "evidence adjudication is deterministic and caller-driven: ",
-    "lengkap-contract reads no ambient clock and exposes no public async API."
+    "lengkap-contract makes no inline `std::time` `now` call and declares no ",
+    "public async fn anywhere in its module tree. Coverage is partial by ",
+    "nature (a clock read through a method on a value, such as ",
+    "`Instant::elapsed`, is invisible to a source scan, and a written ",
+    "`-> impl Future` is not an async fn)."
 );
 const NO_SERDE_REASON: &str = concat!(
     "lengkap-contract owns transient generic mechanism, not a wire format: ",
