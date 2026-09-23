@@ -1,57 +1,63 @@
+# Lengkap Tianheng Law Projection
+
+This file is generated from `constitution()` in `crates/lengkap-governance/src/main.rs`.
+The Rust declaration is authoritative; do not edit the projection by hand.
+Regenerate it with `BLESS=1 cargo test -p lengkap-governance law_projection_is_fresh`.
+
 # Constitution: lengkap
 
 ## Static boundaries
 
-### `lengkap-contract`
+### `lengkap-contract` (crate)
 
 > lengkap-contract is the portable no_std mechanism root: its model and adjudication need no dependency, so it must declare none.
 
 - **rule**: restrict dependencies to (only: )
 - **kind**: crate · **severity**: enforce
 
-### `lengkap`
+### `lengkap` (crate)
 
 > lengkap is the curated public entrypoint: its surface is the complete lengkap-contract re-export, so it may depend only on lengkap-contract.
 
 - **rule**: restrict dependencies to (only: lengkap-contract)
 - **kind**: crate · **severity**: enforce
 
-### `lengkap-governance`
+### `lengkap-governance` (crate)
 
 > the governance gate stays independent of the workspace it judges: lengkap-governance may depend only on tianheng.
 
 - **rule**: restrict dependencies to (only: tianheng)
 - **kind**: crate · **severity**: enforce
 
-### `crate`
+### `lengkap-contract::crate` (module)
 
 > evidence adjudication is an in-memory mechanism: lengkap-contract must not call std::io, std::fs, std::net, or std::process.
 
 - **rule**: inline symbol path confined to module (confined_prefix: std::io)
 - **kind**: module · **severity**: enforce · **crate**: lengkap-contract
 
-### `crate`
+### `lengkap-contract::crate` (module)
 
 > evidence adjudication is an in-memory mechanism: lengkap-contract must not call std::io, std::fs, std::net, or std::process.
 
 - **rule**: inline symbol path confined to module (confined_prefix: std::fs)
 - **kind**: module · **severity**: enforce · **crate**: lengkap-contract
 
-### `crate`
+### `lengkap-contract::crate` (module)
 
 > evidence adjudication is an in-memory mechanism: lengkap-contract must not call std::io, std::fs, std::net, or std::process.
 
 - **rule**: inline symbol path confined to module (confined_prefix: std::net)
 - **kind**: module · **severity**: enforce · **crate**: lengkap-contract
 
-### `crate`
+### `lengkap-contract::crate` (module)
 
 > evidence adjudication is an in-memory mechanism: lengkap-contract must not call std::io, std::fs, std::net, or std::process.
 
 - **rule**: inline symbol path confined to module (confined_prefix: std::process)
 - **kind**: module · **severity**: enforce · **crate**: lengkap-contract
 
-### `crate`
+### `lengkap-contract::crate` (module)
 
 > evidence adjudication is deterministic and caller-driven: lengkap-contract reads no ambient clock and exposes no public async API.
 
@@ -60,7 +66,7 @@
 
 ## Forbidden-marker boundaries
 
-### `crate`
+### `lengkap-contract::crate` (semantic)
 
 > lengkap-contract owns transient generic mechanism, not a wire format: Serialize and Deserialize remain the caller's responsibility.
 
@@ -69,7 +75,7 @@
 
 ## Async-exposure boundaries
 
-### `crate`
+### `lengkap-contract::crate` (semantic)
 
 > evidence adjudication is deterministic and caller-driven: lengkap-contract reads no ambient clock and exposes no public async API.
 

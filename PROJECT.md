@@ -120,7 +120,7 @@ lengkap-governance ───────> tianheng
 
 `lengkap` is a complete glob re-export, not a second product. The governor is
 independent from the graph it judges. The generated Tianheng projection is in
-`docs/architecture/tianheng-law.md`.
+`AGENTS.lengkap-law.md`.
 
 ## Change Prioritization
 
@@ -138,4 +138,4 @@ Potential features without a current consumer belong in `BACKLOG.md`.
 - `docs/worklane-bridge.md` — the Worklane bridge mapping and adoption result.
 - `BACKLOG.md` — settled and deferred decisions.
 - `CHANGELOG.md` — the release ledger.
-- `docs/architecture/tianheng-law.md` — the generated projection of the accepted constitution.
+- `AGENTS.lengkap-law.md` — the generated projection of the accepted constitution.

@@ -249,14 +249,24 @@ mod tests {
     }
 
     #[test]
-    fn repository_is_clean_and_every_member_is_governed() {
+    fn current_workspace_satisfies_constitution() {
         let root = Path::new(env!("CARGO_MANIFEST_DIR"))
             .parent()
             .and_then(Path::parent)
             .unwrap();
         GovernanceTest::for_constitution(constitution())
             .with_manifest_dir(root)
-            .assert_clean()
+            .assert_clean();
+    }
+
+    #[test]
+    fn every_workspace_crate_is_covered() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .and_then(Path::parent)
+            .unwrap();
+        GovernanceTest::for_constitution(constitution())
+            .with_manifest_dir(root)
             .assert_all_workspace_members_covered();
     }
 
@@ -384,15 +394,27 @@ mod tests {
         );
     }
 
+    const LAW_PROJECTION_PREAMBLE: &str = "\
+# Lengkap Tianheng Law Projection
+
+This file is generated from `constitution()` in `crates/lengkap-governance/src/main.rs`.
+The Rust declaration is authoritative; do not edit the projection by hand.
+Regenerate it with `BLESS=1 cargo test -p lengkap-governance law_projection_is_fresh`.
+
+";
+
     #[test]
-    fn constitution_projection_is_fresh() {
+    fn law_projection_is_fresh() {
         let root = Path::new(env!("CARGO_MANIFEST_DIR"))
             .parent()
             .and_then(Path::parent)
             .unwrap();
         GovernanceTest::for_constitution(constitution())
             .with_manifest_dir(root)
-            .assert_projection_fresh("docs/architecture/tianheng-law.md");
+            .assert_projection_fresh_with_preamble(
+                "AGENTS.lengkap-law.md",
+                LAW_PROJECTION_PREAMBLE,
+            );
     }
 
     #[test]
