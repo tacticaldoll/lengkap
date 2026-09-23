@@ -294,9 +294,9 @@ cargo +1.88 build --workspace
 The Rust 1.85 gate is the public product contract. The Rust 1.88 full-workspace gates cover
 repository-only governance tooling as a separate compatibility surface. The semver checks compare
 only the two publishable product crates with their exact crates.io 0.1.0 baselines.
-`lengkap-governance` observes direct dependencies, selected inline standard-library paths, public
-async functions, selected ambient clock reads, and serde marker acquisition; it does not prove
-every runtime effect or the semantic meaning of user evidence.
+`lengkap-governance` observes normal dependencies, inline calls into selected standard-library
+paths, public async functions, inline `std::time` `now` calls, and serde marker acquisition; it does
+not prove every runtime effect or the semantic meaning of user evidence.
 
 CI (`.github/workflows/ci.yml`) runs the same gates on push and pull request. Do not check a task
 off, sync, or integrate while any required gate fails.

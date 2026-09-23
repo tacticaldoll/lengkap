@@ -33,9 +33,10 @@ mechanism can stand as an independent, user-obligation-driven component.
   extensibility belongs in generic values and causes.
 - **Unconditional `no_std + alloc`.** The mechanism has no need for standard
   library or external dependencies.
-- **Governance states only observable facts.** Tianheng checks direct
-  dependencies, selected source paths, async exposure, clock reads, and serde
-  markers. A separate test checks the `#![no_std]` declaration.
+- **Governance states only observable facts.** Tianheng checks normal
+  dependencies, inline calls into selected standard-library paths, public async
+  fn exposure, inline `std::time` `now` calls, and serde markers. A separate
+  test checks the `#![no_std]` declaration.
 - **OpenSpec ends at sync; no archive folder is kept.** Sync merges verified
   delta specs into `openspec/specs/` and removes the change directory; its
   deliberation lives in git history and the merged pull request. The former
