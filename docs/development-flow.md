@@ -1,7 +1,7 @@
 # Development Flow
 
-This project uses OpenSpec for spec-driven development. `AGENTS.md` is the
-authoritative contributor and agent guide; this file is a short checklist.
+This project uses OpenSpec for spec-driven development. `AGENTS.md` is the authoritative
+contributor and agent guide; this file is a short checklist.
 
 ## One Change
 
@@ -10,28 +10,29 @@ authoritative contributor and agent guide; this file is a short checklist.
    - `openspec list`
    - read relevant files under `openspec/specs/`
 2. Propose the change:
-   - `openspec new change "<change-name>"`
+   - `openspec new change "<change>"`
    - write `proposal.md`, `design.md`, `tasks.md`, and delta specs
-   - commit as `docs(<change-name>): propose <summary>`
+   - commit as `docs(<change>): propose <summary>`
 3. Apply the change:
-   - implement against `openspec/changes/<change-name>/specs/`
-   - check off tasks only after code and tests pass
+   - implement against `openspec/changes/<change>/specs/`
+   - check off tasks only after the Definition of Done passes
    - commit coherent compiling milestones as `feat(...)` or `fix(...)`
 4. Sync verified semantics:
-   - promote verified delta specs into `openspec/specs/`
-   - commit as `docs(specs): sync <change-name>`
-5. Archive the completed change, as a distinct gate from sync:
-   - once verified, remove `openspec/changes/<change-name>/` directly
-   - do not run `openspec archive` -- it recreates
-     `openspec/changes/archive/`, which this project keeps empty except
-     `.gitkeep`
-   - commit as `chore(openspec): archive <change-name>`
+   - promote verified delta specs into `openspec/specs/`, then `git rm -r` the completed change
+     directory — its content now lives in `openspec/specs/` and git history; there is no archive
+   - commit as `docs(specs): sync <change>`
+5. Open a pull request against `main` for the whole change. Branch commits can be as granular as
+   you like: the pull request is squash-merged, so its title and body are the durable record.
+
+Every change passes adversarial review at both the propose and apply phases before it is
+committed. See `AGENTS.md`'s Commit And Integration Governance for the pull request and
+squash-merge rules.
 
 ## Commit Granularity
 
-Apply commits should be larger than individual task checkboxes and smaller than
-an entire risky feature. Prefer one commit per coherent milestone that builds,
-tests, and preserves the spec contract.
+Branch commits should be larger than individual task checkboxes and smaller than an entire risky
+feature. Prefer one commit per coherent milestone that builds, tests, and preserves the spec
+contract.
 
 Avoid:
 
@@ -41,26 +42,5 @@ Avoid:
 
 ## Definition Of Done
 
-Run these from the workspace root:
-
-```bash
-cargo build --workspace
-cargo test --workspace
-cargo clippy --workspace --all-targets -- -D warnings
-cargo fmt --all --check
-RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
-cargo +1.85.0 check -p lengkap-contract -p lengkap --all-targets
-cargo +1.88.0 check --workspace --all-targets
-cargo semver-checks --package lengkap-contract --baseline-version 0.1.0
-cargo semver-checks --package lengkap --baseline-version 0.1.0
-cargo deny check
-cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
-```
-
-Rust 1.85 is the compatibility contract for the publishable product crates.
-Rust 1.88 is the tooling floor for the complete repository, including the
-unpublished governor. The semver reactions compare only those product crates
-with their exact crates.io 0.1.0 baselines.
-
-Release finalization is a separate change. Normal feature or repository-shape
-changes do not publish crates, create tags, or create GitHub releases.
+`AGENTS.md` is the single source for the gate list — run its Definition of Done before checking
+off tasks or syncing specs. CI runs the same gates on push and pull request.

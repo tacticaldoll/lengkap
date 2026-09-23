@@ -36,13 +36,12 @@ mechanism can stand as an independent, user-obligation-driven component.
 - **Governance states only observable facts.** Tianheng checks direct
   dependencies, selected source paths, async exposure, clock reads, and serde
   markers. A separate test checks the `#![no_std]` declaration.
-- **Sync and archive are two gates; no archive folder is kept.** Sync
-  merges verified delta specs into `openspec/specs/` and leaves the change
-  directory active for verification. Archive is a distinct, later gate
-  that removes the change directory once verified; its deliberation lives
-  in git history and the merged pull request. `openspec/changes/archive/`
-  stays empty except `.gitkeep`; `openspec archive` (which recreates that
-  folder) is not used.
+- **OpenSpec ends at sync; no archive folder is kept.** Sync merges verified
+  delta specs into `openspec/specs/` and removes the change directory; its
+  deliberation lives in git history and the merged pull request. The former
+  separate archive gate was retired, per the family governance adopted from the family template, because it added a state nothing reads.
+  `openspec/changes/archive/` stays empty except `.gitkeep`; `openspec archive`
+  (which recreates that folder) is not used.
 - **Independent product authority.** Concrete Lengkap pressure can justify core
   evolution without Worklane adoption. A real consumer remains a separate
   graduation test, not a prerequisite for product discovery.

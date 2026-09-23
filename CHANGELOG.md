@@ -1,16 +1,12 @@
 # Changelog
 
-This file is a ledger of released versions, based on
-[Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
+This file is a ledger of released versions. The format follows
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Normal development is recorded in OpenSpec changes, pull requests, and
-`BACKLOG.md`, not in an `[Unreleased]` section.
-
-A release preparation pull request adds a heading in this form:
-`## [X.Y.Z] - YYYY-MM-DD`. Its footer links the version to the matching GitHub
-tag:
-`[X.Y.Z]: https://github.com/tacticaldoll/lengkap/releases/tag/vX.Y.Z`.
+Normal development is recorded in OpenSpec changes, pull requests, and `BACKLOG.md`, not in an
+`[Unreleased]` section. Each version's entry is written in its own release-preparation pull
+request (see `AGENTS.md`'s Release Finalization).
 
 ## [0.1.2] - 2026-08-01
 
