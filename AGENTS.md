@@ -288,6 +288,7 @@ cargo semver-checks --package lengkap --baseline-version 0.1.0
 cargo deny check
 cargo run -p lengkap-governance -- check --manifest-path Cargo.toml
 ./scripts/changelog-guard.sh
+npx -y @fission-ai/openspec@1.13.2 validate --all --strict --no-interactive
 cargo +1.88 build --workspace
 ```
 
